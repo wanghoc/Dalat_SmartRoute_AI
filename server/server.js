@@ -245,9 +245,9 @@ app.get('/api/places', (req, res) => {
  * @body {string} query - User's natural language query
  * @returns {Object} Response with matching places or Google Search link
  */
-app.post('/api/chatbot', (req, res) => {
+app.post('/api/chatbot', async (req, res) => {
     try {
-        const { query } = req.body;
+        const { query, context } = req.body;
 
         if (!query) {
             return res.status(400).json({
@@ -257,8 +257,11 @@ app.post('/api/chatbot', (req, res) => {
             });
         }
 
-        // Process the query
-        const result = processChatbotQuery(query);
+        // Use context from frontend (already has weather)
+        const enhancedContext = context || { weather: 'cloudy', temperature: 18 };
+
+        // Process the query with context
+        const result = processChatbotQuery(query, enhancedContext);
 
         res.json(result);
 
