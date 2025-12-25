@@ -1,0 +1,215 @@
+/**
+ * ============================================================
+ * GLOBAL STYLES
+ * Smart Da Lat Tourism - Client
+ * ============================================================
+ * 
+ * Tailwind CSS base + custom styles
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+
+@layer base {
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Base body styles */
+  body {
+    @apply font-sans antialiased;
+    background: linear-gradient(135deg, #E0F7FA 0%, #E8F5E9 50%, #FFF3E0 100%);
+    min-height: 100vh;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-primary-50;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary-300 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-400;
+  }
+}
+
+/* ============================================================
+   Component Styles
+   ============================================================ */
+
+@layer components {
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-glass;
+  }
+
+  /* Card styles */
+  .card {
+    @apply bg-white rounded-2xl shadow-card transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply shadow-card-hover transform -translate-y-1;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl 
+           font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 
+           transition-all duration-300 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 text-white px-6 py-3 rounded-xl 
+           font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 
+           transition-all duration-300 active:scale-95;
+  }
+
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent-400 to-accent-500 text-white px-6 py-3 rounded-xl 
+           font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 
+           transition-all duration-300 active:scale-95;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-indoor {
+    @apply bg-primary-100 text-primary-700;
+  }
+
+  .badge-outdoor {
+    @apply bg-secondary-100 text-secondary-700;
+  }
+
+  .badge-cafe {
+    @apply bg-dalat-coffee/10 text-dalat-coffee;
+  }
+
+  .badge-waterfall {
+    @apply bg-blue-100 text-blue-700;
+  }
+
+  .badge-viewpoint {
+    @apply bg-accent-100 text-accent-700;
+  }
+
+  .badge-restaurant {
+    @apply bg-dalat-flower/10 text-dalat-flower;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-primary-100 
+           focus:border-primary-400 focus:ring-2 focus:ring-primary-200 
+           outline-none transition-all duration-300 bg-white/80;
+  }
+
+  /* Section container */
+  .section {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  /* Header gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-500 
+           bg-clip-text text-transparent;
+  }
+}
+
+/* ============================================================
+   Utility Styles
+   ============================================================ */
+
+@layer utilities {
+  /* Animated gradient background */
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 8s ease infinite;
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Weather icon animations */
+  .weather-icon {
+    @apply text-6xl animate-float;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+}
+
+/* ============================================================
+   Weather Icons (Emoji-based)
+   ============================================================ */
+
+.weather-sunny::before { content: '☀️'; }
+.weather-cloudy::before { content: '⛅'; }
+.weather-rainy::before { content: '🌧️'; }
+.weather-clear::before { content: '🌤️'; }
+
+/* ============================================================
+   Animations for Page Elements
+   ============================================================ */
+
+/* Staggered fade in for cards */
+.card-grid > * {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.card-grid > *:nth-child(1) { animation-delay: 0.1s; }
+.card-grid > *:nth-child(2) { animation-delay: 0.2s; }
+.card-grid > *:nth-child(3) { animation-delay: 0.3s; }
+.card-grid > *:nth-child(4) { animation-delay: 0.4s; }
+.card-grid > *:nth-child(5) { animation-delay: 0.5s; }
+.card-grid > *:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   Chatbot Styles
+   ============================================================ */
+
+.chatbot-bubble {
+  @apply fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full 
+         bg-gradient-to-r from-primary-500 to-accent-500 
+         shadow-lg flex items-center justify-center cursor-pointer
+         hover:scale-110 transition-transform duration-300;
+}
+
+.chatbot-window {
+  @apply fixed bottom-24 right-6 z-50 w-80 sm:w-96 h-[500px] 
+         rounded-2xl shadow-2xl overflow-hidden 
+         animate-slide-up;
+}

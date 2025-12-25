@@ -1,0 +1,19 @@
+{
+  "name": "dalat-smart-tourism-server",
+  "version": "1.0.0",
+  "description": "Backend server for Smart Da Lat Tourism Recommendation System",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  },
+  "keywords": ["dalat", "tourism", "recommendation", "weather"],
+  "author": "",
+  "license": "MIT"
+}
