@@ -1,215 +1,142 @@
-/**
- * ============================================================
- * GLOBAL STYLES
- * Smart Da Lat Tourism - Client
- * ============================================================
- * 
- * Tailwind CSS base + custom styles
- */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================================
-   Base Styles
-   ============================================================ */
-
+/* Base Styles */
 @layer base {
-  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
   }
 
-  /* Base body styles */
   body {
-    @apply font-sans antialiased;
-    background: linear-gradient(135deg, #E0F7FA 0%, #E8F5E9 50%, #FFF3E0 100%);
-    min-height: 100vh;
+    @apply font-sans antialiased bg-slate-50 text-slate-800;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-primary-50;
+    @apply bg-slate-100;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary-300 rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-400;
+    @apply bg-slate-300 rounded-full;
   }
 }
 
-/* ============================================================
-   Component Styles
-   ============================================================ */
-
+/* Component Styles */
 @layer components {
-  /* Glass morphism effect */
-  .glass {
-    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-glass;
-  }
 
-  /* Card styles */
+  /* Clean card design */
   .card {
-    @apply bg-white rounded-2xl shadow-card transition-all duration-300;
+    @apply bg-white rounded-2xl shadow-card overflow-hidden transition-all duration-300;
   }
 
   .card:hover {
-    @apply shadow-card-hover transform -translate-y-1;
+    @apply shadow-soft transform -translate-y-1;
   }
 
   /* Button styles */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-medium transition-all duration-200 active:scale-[0.98];
+  }
+
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-xl 
-           font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 
-           transition-all duration-300 active:scale-95;
+    @apply btn bg-primary-500 text-white hover:bg-primary-600;
   }
 
   .btn-secondary {
-    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 text-white px-6 py-3 rounded-xl 
-           font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 
-           transition-all duration-300 active:scale-95;
+    @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200;
   }
 
-  .btn-accent {
-    @apply bg-gradient-to-r from-accent-400 to-accent-500 text-white px-6 py-3 rounded-xl 
-           font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 
-           transition-all duration-300 active:scale-95;
+  .btn-outline {
+    @apply btn border-2 border-primary-500 text-primary-600 hover:bg-primary-50;
   }
 
-  /* Badge styles */
+  /* Badge styles - minimal */
   .badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
   }
 
-  .badge-indoor {
-    @apply bg-primary-100 text-primary-700;
-  }
-
-  .badge-outdoor {
-    @apply bg-secondary-100 text-secondary-700;
-  }
-
-  .badge-cafe {
-    @apply bg-dalat-coffee/10 text-dalat-coffee;
-  }
-
-  .badge-waterfall {
-    @apply bg-blue-100 text-blue-700;
-  }
-
-  .badge-viewpoint {
-    @apply bg-accent-100 text-accent-700;
-  }
-
-  .badge-restaurant {
-    @apply bg-dalat-flower/10 text-dalat-flower;
-  }
-
-  /* Input styles */
+  /* Input */
   .input {
-    @apply w-full px-4 py-3 rounded-xl border-2 border-primary-100 
-           focus:border-primary-400 focus:ring-2 focus:ring-primary-200 
-           outline-none transition-all duration-300 bg-white/80;
+    @apply w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all;
   }
 
-  /* Section container */
+  /* Section */
   .section {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
-  }
-
-  /* Header gradient text */
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-500 
-           bg-clip-text text-transparent;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 
-/* ============================================================
-   Utility Styles
-   ============================================================ */
+/* Weather Backgrounds */
+.weather-sunny {
+  background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 50%, #f59e0b 100%);
+}
 
-@layer utilities {
-  /* Animated gradient background */
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 8s ease infinite;
+.weather-clear {
+  background: linear-gradient(135deg, #dbeafe 0%, #60a5fa 50%, #3b82f6 100%);
+}
+
+.weather-cloudy {
+  background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 50%, #94a3b8 100%);
+}
+
+.weather-rainy {
+  background: linear-gradient(135deg, #475569 0%, #334155 50%, #1e293b 100%);
+}
+
+/* Rain animation */
+.rain-drop {
+  position: absolute;
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.6));
+  animation: rain 0.8s linear infinite;
+}
+
+/* Sun rays animation */
+.sun-rays {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+/* Floating clouds */
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  animation: cloudFloat 15s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
   }
 
-  @keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  /* Weather icon animations */
-  .weather-icon {
-    @apply text-6xl animate-float;
-  }
-
-  /* Loading skeleton */
-  .skeleton {
-    @apply animate-pulse bg-gray-200 rounded;
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
   }
 }
 
-/* ============================================================
-   Weather Icons (Emoji-based)
-   ============================================================ */
-
-.weather-sunny::before { content: '☀️'; }
-.weather-cloudy::before { content: '⛅'; }
-.weather-rainy::before { content: '🌧️'; }
-.weather-clear::before { content: '🌤️'; }
-
-/* ============================================================
-   Animations for Page Elements
-   ============================================================ */
-
-/* Staggered fade in for cards */
-.card-grid > * {
-  animation: fadeInUp 0.5s ease forwards;
-  opacity: 0;
+/* Card grid animation */
+.card-appear {
+  animation: slideUp 0.5s ease-out forwards;
 }
 
-.card-grid > *:nth-child(1) { animation-delay: 0.1s; }
-.card-grid > *:nth-child(2) { animation-delay: 0.2s; }
-.card-grid > *:nth-child(3) { animation-delay: 0.3s; }
-.card-grid > *:nth-child(4) { animation-delay: 0.4s; }
-.card-grid > *:nth-child(5) { animation-delay: 0.5s; }
-.card-grid > *:nth-child(6) { animation-delay: 0.6s; }
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================================================
-   Chatbot Styles
-   ============================================================ */
-
+/* Chatbot */
 .chatbot-bubble {
-  @apply fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full 
-         bg-gradient-to-r from-primary-500 to-accent-500 
-         shadow-lg flex items-center justify-center cursor-pointer
-         hover:scale-110 transition-transform duration-300;
+  @apply fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary-500 shadow-lg flex items-center justify-center cursor-pointer hover:bg-primary-600 hover:scale-105 transition-all duration-200;
 }
 
 .chatbot-window {
-  @apply fixed bottom-24 right-6 z-50 w-80 sm:w-96 h-[500px] 
-         rounded-2xl shadow-2xl overflow-hidden 
-         animate-slide-up;
+  @apply fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-48px)] bg-white rounded-2xl shadow-2xl overflow-hidden animate-slide-up;
 }

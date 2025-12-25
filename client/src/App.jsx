@@ -1,62 +1,46 @@
 /**
- * ============================================================
- * MAIN APPLICATION
- * Smart Da Lat Tourism Recommendation System
- * ============================================================
+ * Main Application
+ * Da Lat SmartRoute
  * 
- * Main React application with:
- * - Header with logo and search
- * - Hero section with Weather Widget
- * - Main content with recommendation cards
- * - Google Maps embed
- * - Floating chatbot
- * - Footer
- * 
- * @author Smart Da Lat Tourism Team
- * @version 1.0.0
+ * Clean, modern tourism recommendation app with:
+ * - Weather-based recommendations
+ * - "You might like" section
+ * - Detail pages via React Router
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import WeatherWidget from './components/WeatherWidget';
 import PlaceCard from './components/PlaceCard';
 import Chatbot from './components/Chatbot';
-import MapEmbed from './components/MapEmbed';
+import PlaceDetailPage from './pages/PlaceDetailPage';
 
 /**
- * Main App Component
+ * Home Page Component
  */
-function App() {
-    // State management
+function HomePage() {
     const [weatherCondition, setWeatherCondition] = useState('cloudy');
     const [recommendations, setRecommendations] = useState([]);
     const [allPlaces, setAllPlaces] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
-    const [activeFilter, setActiveFilter] = useState('all');
-    const [currentTime, setCurrentTime] = useState(new Date());
 
-    /**
-     * Handle weather condition change from WeatherWidget
-     */
     const handleWeatherChange = useCallback((condition) => {
         setWeatherCondition(condition);
     }, []);
 
-    /**
-     * Fetch recommendations from API based on weather condition
-     */
+    // Fetch recommendations based on weather
     useEffect(() => {
         const fetchRecommendations = async () => {
             try {
                 setLoading(true);
                 const response = await fetch(`/api/recommendations?condition=${weatherCondition}`);
                 const data = await response.json();
-
                 if (data.success) {
                     setRecommendations(data.data.places);
                 }
             } catch (error) {
-                console.error('Failed to fetch recommendations:', error);
+                console.error('Fetch error:', error);
             } finally {
                 setLoading(false);
             }
@@ -65,9 +49,7 @@ function App() {
         fetchRecommendations();
     }, [weatherCondition]);
 
-    /**
-     * Fetch all places for search/filter
-     */
+    // Fetch all places
     useEffect(() => {
         const fetchAllPlaces = async () => {
             try {
@@ -77,344 +59,205 @@ function App() {
                     setAllPlaces(data.data.places);
                 }
             } catch (error) {
-                console.error('Failed to fetch places:', error);
+                console.error('Fetch error:', error);
             }
         };
 
         fetchAllPlaces();
     }, []);
 
-    /**
-     * Update current time every minute
-     */
-    useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-        return () => clearInterval(timer);
-    }, []);
-
-    /**
-     * Filter places based on search query and active filter
-     */
+    // Filter by search
     const getFilteredPlaces = () => {
-        let places = searchQuery ? allPlaces : recommendations;
-
-        // Apply search filter
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            places = places.filter(place =>
-                place.name.toLowerCase().includes(query) ||
-                place.name_vi?.toLowerCase().includes(query) ||
-                place.description.toLowerCase().includes(query) ||
-                place.type.toLowerCase().includes(query)
-            );
-        }
-
-        // Apply type filter
-        if (activeFilter !== 'all') {
-            places = places.filter(place => place.type === activeFilter);
-        }
-
-        return places;
+        if (!searchQuery) return [];
+        const query = searchQuery.toLowerCase();
+        return allPlaces.filter(place =>
+            place.name.toLowerCase().includes(query) ||
+            place.description.toLowerCase().includes(query)
+        );
     };
 
-    /**
-     * Get unique place types for filter buttons
-     */
-    const getPlaceTypes = () => {
-        const types = [...new Set(allPlaces.map(p => p.type))];
-        return ['all', ...types];
+    // Get "You might like" places (not in recommendations)
+    const getOtherPlaces = () => {
+        const recIds = new Set(recommendations.map(r => r.id));
+        return allPlaces.filter(p => !recIds.has(p.id)).slice(0, 6);
     };
 
-    /**
-     * Get filter button label and emoji
-     */
-    const getFilterLabel = (type) => {
-        const labels = {
-            all: '🎯 Tất cả',
-            indoor: '🏠 Trong nhà',
-            outdoor: '🌳 Ngoài trời',
-            cafe: '☕ Cafe',
-            waterfall: '💧 Thác nước',
-            viewpoint: '🏔️ Ngắm cảnh',
-            restaurant: '🍽️ Nhà hàng'
-        };
-        return labels[type] || type;
-    };
+    const searchResults = getFilteredPlaces();
+    const otherPlaces = getOtherPlaces();
 
-    const filteredPlaces = getFilteredPlaces();
-    const placeTypes = getPlaceTypes();
+    // Loading skeleton
+    const LoadingSkeleton = () => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+                <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse">
+                    <div className="h-44 bg-slate-200" />
+                    <div className="p-4 space-y-2">
+                        <div className="h-4 bg-slate-200 rounded w-3/4" />
+                        <div className="h-3 bg-slate-200 rounded w-full" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
 
     return (
-        <div className="min-h-screen">
-            {/* ========== HEADER ========== */}
-            <header className="glass sticky top-0 z-40 border-b border-white/30">
+        <div className="min-h-screen bg-slate-50">
+            {/* Header */}
+            <header className="bg-white border-b border-slate-100 sticky top-0 z-40">
                 <div className="section py-4">
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
                         {/* Logo */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 
-                              rounded-xl flex items-center justify-center shadow-lg">
-                                <span className="text-2xl">🌸</span>
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-bold gradient-text">Smart Da Lat</h1>
-                                <p className="text-xs text-gray-500">Du lịch thông minh</p>
-                            </div>
-                        </div>
+                        <Link to="/" className="flex items-center gap-2">
+                            <img src="/dalat-icon.svg" alt="Logo" className="w-8 h-8" />
+                            <span className="font-semibold text-slate-800">Da Lat SmartRoute</span>
+                        </Link>
 
-                        {/* Search bar */}
-                        <div className="flex-1 max-w-md hidden sm:block">
+                        {/* Search */}
+                        <div className="flex-1 max-w-md ml-auto">
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                    🔍
-                                </span>
                                 <input
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Tìm địa điểm..."
-                                    className="input pl-11 py-2.5 text-sm"
+                                    className="input py-2 pl-10 text-sm"
                                 />
+                                <svg className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
                                 {searchQuery && (
                                     <button
                                         onClick={() => setSearchQuery('')}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 
-                               hover:text-gray-600 text-lg"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                                     >
                                         ×
                                     </button>
                                 )}
                             </div>
                         </div>
-
-                        {/* Current time display */}
-                        <div className="hidden md:flex items-center gap-2 text-gray-600">
-                            <span className="text-lg">🕐</span>
-                            <span className="text-sm font-medium">
-                                {currentTime.toLocaleTimeString('vi-VN', {
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Mobile search */}
-                    <div className="mt-4 sm:hidden">
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                🔍
-                            </span>
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Tìm địa điểm..."
-                                className="input pl-11 py-2.5 text-sm"
-                            />
-                        </div>
                     </div>
                 </div>
             </header>
 
-            {/* ========== HERO SECTION ========== */}
-            <section className="section pt-8 pb-4">
-                <div className="grid md:grid-cols-2 gap-6">
-                    {/* Weather Widget */}
-                    <div className="animate-fade-in">
-                        <WeatherWidget onWeatherChange={handleWeatherChange} />
-                    </div>
-
-                    {/* Welcome message & info */}
-                    <div className="glass rounded-3xl p-8 flex flex-col justify-center animate-fade-in">
-                        <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                            Khám phá Đà Lạt
-                            <span className="gradient-text"> thông minh</span> 🌸
+            {/* Main Content */}
+            <main className="section py-6">
+                {/* Search Results */}
+                {searchQuery && (
+                    <section className="mb-8">
+                        <h2 className="text-lg font-semibold text-slate-800 mb-4">
+                            Kết quả tìm kiếm
                         </h2>
-                        <p className="text-gray-600 mb-6 leading-relaxed">
-                            Hệ thống AI gợi ý địa điểm dựa trên <strong>thời tiết thực</strong> và
-                            <strong> giờ mở cửa</strong>. Đảm bảo bạn luôn có trải nghiệm tuyệt vời
-                            nhất khi đến Đà Lạt!
-                        </p>
-
-                        {/* Quick stats */}
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="text-center p-3 bg-primary-50 rounded-xl">
-                                <p className="text-2xl font-bold text-primary-600">{allPlaces.length}</p>
-                                <p className="text-xs text-gray-500">Địa điểm</p>
+                        {searchResults.length > 0 ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {searchResults.map(place => (
+                                    <PlaceCard key={place.id} place={place} />
+                                ))}
                             </div>
-                            <div className="text-center p-3 bg-secondary-50 rounded-xl">
-                                <p className="text-2xl font-bold text-secondary-600">{filteredPlaces.length}</p>
-                                <p className="text-xs text-gray-500">Đang mở</p>
-                            </div>
-                            <div className="text-center p-3 bg-accent-50 rounded-xl">
-                                <p className="text-2xl font-bold text-accent-600">
-                                    {weatherCondition === 'rainy' ? '🌧️' :
-                                        weatherCondition === 'sunny' ? '☀️' :
-                                            weatherCondition === 'clear' ? '🌤️' : '⛅'}
-                                </p>
-                                <p className="text-xs text-gray-500">Thời tiết</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ========== FILTER SECTION ========== */}
-            <section className="section py-4">
-                <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                    {placeTypes.map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => setActiveFilter(type)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
-                         transition-all duration-300 ${activeFilter === type
-                                    ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-lg'
-                                    : 'bg-white/80 text-gray-600 hover:bg-white hover:shadow-md'
-                                }`}
-                        >
-                            {getFilterLabel(type)}
-                        </button>
-                    ))}
-                </div>
-            </section>
-
-            {/* ========== MAIN CONTENT - RECOMMENDATIONS ========== */}
-            <section className="section py-4">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">
-                        {searchQuery
-                            ? `🔍 Kết quả tìm kiếm`
-                            : `📍 Gợi ý cho bạn`
-                        }
-                    </h2>
-                    <span className="text-sm text-gray-500">
-                        {filteredPlaces.length} địa điểm
-                    </span>
-                </div>
-
-                {/* Loading state */}
-                {loading && (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="card animate-pulse">
-                                <div className="h-48 bg-gray-200 rounded-t-2xl"></div>
-                                <div className="p-5 space-y-3">
-                                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                                    <div className="h-3 bg-gray-200 rounded w-full"></div>
-                                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* Empty state */}
-                {!loading && filteredPlaces.length === 0 && (
-                    <div className="glass rounded-3xl p-12 text-center">
-                        <span className="text-6xl mb-4 block">🔍</span>
-                        <h3 className="text-xl font-bold text-gray-700 mb-2">
-                            Không tìm thấy địa điểm
-                        </h3>
-                        <p className="text-gray-500 mb-4">
-                            Thử thay đổi từ khóa hoặc bộ lọc để tìm địa điểm phù hợp
-                        </p>
-                        <button
-                            onClick={() => { setSearchQuery(''); setActiveFilter('all'); }}
-                            className="btn-primary"
-                        >
-                            Xem tất cả
-                        </button>
-                    </div>
-                )}
-
-                {/* Places grid */}
-                {!loading && filteredPlaces.length > 0 && (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 card-grid">
-                        {filteredPlaces.map((place, index) => (
-                            <PlaceCard
-                                key={place.id}
-                                place={place}
-                                featured={index === 0 && !searchQuery}
-                            />
-                        ))}
-                    </div>
-                )}
-            </section>
-
-            {/* ========== MAP SECTION ========== */}
-            <section className="section py-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                    🗺️ Bản đồ Đà Lạt
-                </h2>
-                <MapEmbed className="h-[400px]" />
-            </section>
-
-            {/* ========== FOOTER ========== */}
-            <footer className="glass mt-12 border-t border-white/30">
-                <div className="section py-8">
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {/* About */}
-                        <div>
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 
-                                rounded-xl flex items-center justify-center shadow-lg">
-                                    <span className="text-xl">🌸</span>
-                                </div>
-                                <h3 className="text-lg font-bold gradient-text">Smart Da Lat</h3>
-                            </div>
-                            <p className="text-gray-600 text-sm">
-                                Hệ thống gợi ý du lịch thông minh sử dụng AI để đề xuất
-                                địa điểm dựa trên thời tiết và thời gian thực.
+                        ) : (
+                            <p className="text-slate-500 text-center py-8">
+                                Không tìm thấy địa điểm phù hợp
                             </p>
-                        </div>
+                        )}
+                    </section>
+                )}
 
-                        {/* Quick links */}
-                        <div>
-                            <h4 className="font-semibold text-gray-800 mb-4">Liên kết</h4>
-                            <ul className="space-y-2 text-sm">
-                                <li>
-                                    <a href="https://www.google.com/maps/place/Da+Lat"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-gray-600 hover:text-primary-600 transition-colors">
-                                        🗺️ Bản đồ Đà Lạt
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://openweathermap.org"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-gray-600 hover:text-primary-600 transition-colors">
-                                        🌤️ OpenWeatherMap
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                {/* Main Layout - Weather + Recommendations */}
+                {!searchQuery && (
+                    <>
+                        {/* Weather Section */}
+                        <section className="mb-8">
+                            <div className="grid md:grid-cols-3 gap-6">
+                                <div className="md:col-span-1">
+                                    <WeatherWidget onWeatherChange={handleWeatherChange} />
+                                </div>
+                                <div className="md:col-span-2 flex flex-col justify-center">
+                                    <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
+                                        Khám phá Đà Lạt
+                                    </h1>
+                                    <p className="text-slate-500 mb-4">
+                                        Gợi ý địa điểm dựa trên thời tiết và thời gian thực
+                                    </p>
+                                    <div className="flex gap-2">
+                                        <span className="badge bg-primary-100 text-primary-700">AI Recommendation</span>
+                                        <span className="badge bg-slate-100 text-slate-600">{allPlaces.length} địa điểm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
 
-                        {/* Contact */}
-                        <div>
-                            <h4 className="font-semibold text-gray-800 mb-4">Liên hệ</h4>
-                            <ul className="space-y-2 text-sm text-gray-600">
-                                <li>📍 Đà Lạt, Lâm Đồng, Việt Nam</li>
-                                <li>📧 info@smartdalat.vn</li>
-                                <li>📱 +84 263 123 4567</li>
-                            </ul>
-                        </div>
-                    </div>
+                        {/* Weather-based Recommendations */}
+                        <section className="mb-8">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-semibold text-slate-800">
+                                    Phù hợp với thời tiết
+                                </h2>
+                                <span className="text-sm text-slate-500">
+                                    {recommendations.length} địa điểm
+                                </span>
+                            </div>
 
-                    {/* Copyright */}
-                    <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-                        <p className="text-gray-500 text-sm">
-                            © 2024 Smart Da Lat Tourism. Made with 💚 for Da Lat lovers.
+                            {loading ? (
+                                <LoadingSkeleton />
+                            ) : (
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {recommendations.slice(0, 8).map(place => (
+                                        <PlaceCard key={place.id} place={place} />
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+
+                        {/* You might like */}
+                        {otherPlaces.length > 0 && (
+                            <section className="mb-8">
+                                <h2 className="text-lg font-semibold text-slate-800 mb-4">
+                                    Có thể bạn quan tâm
+                                </h2>
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {otherPlaces.map(place => (
+                                        <PlaceCard key={place.id} place={place} />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </>
+                )}
+            </main>
+
+            {/* Footer */}
+            <footer className="bg-white border-t border-slate-100 mt-8">
+                <div className="section py-6">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-2">
+                            <img src="/dalat-icon.svg" alt="Logo" className="w-6 h-6" />
+                            <span className="text-sm text-slate-600">Da Lat SmartRoute</span>
+                        </div>
+                        <p className="text-sm text-slate-400">
+                            © 2024 - Hệ thống gợi ý du lịch thông minh
                         </p>
                     </div>
                 </div>
             </footer>
 
-            {/* ========== CHATBOT ========== */}
-            <Chatbot />
+            {/* Chatbot */}
+            <Chatbot currentWeather={weatherCondition} />
         </div>
+    );
+}
+
+/**
+ * Main App with Router
+ */
+function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/place/:id" element={<PlaceDetailPage />} />
+            </Routes>
+        </BrowserRouter>
     );
 }
 

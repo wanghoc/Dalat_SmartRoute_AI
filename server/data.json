@@ -2,18 +2,17 @@
     "locations": [
         {
             "id": 1,
-            "name": "Crazy House (Biệt Thự Hằng Nga)",
+            "name": "Crazy House",
             "name_vi": "Biệt Thự Hằng Nga",
             "type": "indoor",
-            "description": "A unique architectural masterpiece resembling a giant tree with unconventional rooms. Perfect for exploring during rainy days.",
-            "description_vi": "Kiệt tác kiến trúc độc đáo giống như một cây khổng lồ với các phòng độc lạ. Hoàn hảo để khám phá trong những ngày mưa.",
+            "description": "Kiệt tác kiến trúc độc đáo với thiết kế siêu thực, giống như một cây khổng lồ với các phòng hình thú.",
             "opening_hours": {
                 "start": "08:30",
                 "end": "19:00"
             },
             "lat": 11.9318,
             "lng": 108.4322,
-            "google_map_link": "https://www.google.com/maps/place/Crazy+House/@11.9318,108.4322",
+            "google_map_link": "https://maps.google.com/?q=11.9318,108.4322",
             "best_weather": [
                 "rainy",
                 "cloudy",
@@ -21,72 +20,68 @@
                 "clear"
             ],
             "image": "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=400",
-            "address": "3 Đường Huỳnh Thúc Kháng, Phường 4, Đà Lạt",
+            "address": "3 Huỳnh Thúc Kháng, Phường 4",
             "phone": "0263 3822 070",
-            "price_range": "80,000 VND"
+            "price_range": "80.000đ"
         },
         {
             "id": 2,
-            "name": "Datanla Waterfall",
-            "name_vi": "Thác Datanla",
+            "name": "Thác Datanla",
+            "name_vi": "Datanla Waterfall",
             "type": "waterfall",
-            "description": "A stunning multi-tiered waterfall with exciting activities like alpine coaster and cable car. Best visited on sunny days.",
-            "description_vi": "Thác nước nhiều tầng tuyệt đẹp với các hoạt động thú vị như tàu lượn và cáp treo.",
+            "description": "Thác nước nhiều tầng nổi tiếng với máng trượt alpine coaster và cáp treo.",
             "opening_hours": {
                 "start": "07:00",
                 "end": "17:00"
             },
             "lat": 11.8978,
             "lng": 108.4503,
-            "google_map_link": "https://www.google.com/maps/place/Datanla+Waterfall/@11.8978,108.4503",
+            "google_map_link": "https://maps.google.com/?q=11.8978,108.4503",
             "best_weather": [
                 "sunny",
                 "clear",
                 "cloudy"
             ],
             "image": "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=400",
-            "address": "QL20, Phường 3, Đà Lạt",
+            "address": "QL20, Phường 3",
             "phone": "0263 3531 535",
-            "price_range": "70,000 VND"
+            "price_range": "70.000đ"
         },
         {
             "id": 3,
-            "name": "Da Lat Night Market",
-            "name_vi": "Chợ Đêm Đà Lạt",
+            "name": "Chợ Đêm Đà Lạt",
+            "name_vi": "Dalat Night Market",
             "type": "outdoor",
-            "description": "Vibrant night market offering local food, souvenirs, and authentic Da Lat atmosphere. Opens in the evening.",
-            "description_vi": "Chợ đêm sôi động với ẩm thực địa phương, quà lưu niệm và không khí Đà Lạt đặc trưng.",
+            "description": "Thiên đường ẩm thực và mua sắm về đêm với bánh tráng nướng, sữa đậu nành và các đặc sản địa phương.",
             "opening_hours": {
                 "start": "18:00",
                 "end": "23:59"
             },
             "lat": 11.9404,
             "lng": 108.4389,
-            "google_map_link": "https://www.google.com/maps/place/Da+Lat+Night+Market/@11.9404,108.4389",
+            "google_map_link": "https://maps.google.com/?q=11.9404,108.4389",
             "best_weather": [
                 "sunny",
                 "clear",
                 "cloudy"
             ],
             "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400",
-            "address": "Nguyễn Thị Minh Khai, Phường 1, Đà Lạt",
-            "phone": "",
-            "price_range": "Free entry"
+            "address": "Nguyễn Thị Minh Khai, Phường 1",
+            "price_range": "Miễn phí"
         },
         {
             "id": 4,
-            "name": "Lam Dong Museum",
-            "name_vi": "Bảo Tàng Lâm Đồng",
+            "name": "Bảo Tàng Lâm Đồng",
+            "name_vi": "Lam Dong Museum",
             "type": "indoor",
-            "description": "Learn about the rich history and culture of Da Lat and the Central Highlands. Great indoor activity for rainy days.",
-            "description_vi": "Tìm hiểu về lịch sử và văn hóa phong phú của Đà Lạt và Tây Nguyên. Hoạt động trong nhà tuyệt vời cho ngày mưa.",
+            "description": "Khám phá lịch sử và văn hóa Đà Lạt qua các hiện vật quý giá từ thời tiền sử đến nay.",
             "opening_hours": {
                 "start": "07:30",
                 "end": "11:30"
             },
             "lat": 11.9412,
             "lng": 108.4381,
-            "google_map_link": "https://www.google.com/maps/place/Lam+Dong+Museum/@11.9412,108.4381",
+            "google_map_link": "https://maps.google.com/?q=11.9412,108.4381",
             "best_weather": [
                 "rainy",
                 "cloudy",
@@ -94,24 +89,23 @@
                 "clear"
             ],
             "image": "https://images.unsplash.com/photo-1566127444979-b3d2b654e3d7?w=400",
-            "address": "4 Hùng Vương, Phường 10, Đà Lạt",
+            "address": "4 Hùng Vương, Phường 10",
             "phone": "0263 3822 339",
-            "price_range": "15,000 VND"
+            "price_range": "15.000đ"
         },
         {
             "id": 5,
-            "name": "The Married Cafe",
-            "name_vi": "The Married Cafe",
+            "name": "The Married Beans",
+            "name_vi": "The Married Beans Coffee",
             "type": "cafe",
-            "description": "Cozy hillside cafe with stunning valley views. Perfect for enjoying Da Lat's famous coffee while watching the sunset.",
-            "description_vi": "Quán cà phê sườn đồi ấm cúng với tầm nhìn thung lũng tuyệt đẹp. Hoàn hảo để thưởng thức cà phê Đà Lạt nổi tiếng.",
+            "description": "Quán cà phê sườn đồi với view thung lũng tuyệt đẹp, nổi tiếng với cà phê specialty.",
             "opening_hours": {
                 "start": "07:00",
                 "end": "22:00"
             },
             "lat": 11.9256,
             "lng": 108.4312,
-            "google_map_link": "https://www.google.com/maps/place/The+Married+Cafe/@11.9256,108.4312",
+            "google_map_link": "https://maps.google.com/?q=11.9256,108.4312",
             "best_weather": [
                 "sunny",
                 "clear",
@@ -119,47 +113,45 @@
                 "rainy"
             ],
             "image": "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=400",
-            "address": "20 Hoàng Hoa Thám, Phường 10, Đà Lạt",
+            "address": "20 Hoàng Hoa Thám, Phường 10",
             "phone": "0903 123 456",
-            "price_range": "40,000 - 100,000 VND"
+            "price_range": "40-100k"
         },
         {
             "id": 6,
-            "name": "Langbiang Peak",
-            "name_vi": "Đỉnh Langbiang",
+            "name": "Đỉnh Langbiang",
+            "name_vi": "Langbiang Peak",
             "type": "viewpoint",
-            "description": "The highest peak in Da Lat area offering panoramic views. Best experienced on clear sunny days for amazing visibility.",
-            "description_vi": "Đỉnh cao nhất khu vực Đà Lạt với tầm nhìn toàn cảnh. Tốt nhất nên đến vào ngày nắng đẹp để có tầm nhìn tuyệt vời.",
+            "description": "Đỉnh núi cao nhất Đà Lạt với tầm nhìn 360 độ. Có thể leo bộ hoặc đi xe jeep.",
             "opening_hours": {
                 "start": "06:00",
                 "end": "17:30"
             },
             "lat": 12.0521,
             "lng": 108.4394,
-            "google_map_link": "https://www.google.com/maps/place/Langbiang+Peak/@12.0521,108.4394",
+            "google_map_link": "https://maps.google.com/?q=12.0521,108.4394",
             "best_weather": [
                 "sunny",
                 "clear"
             ],
             "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
-            "address": "Lạc Dương, Lâm Đồng",
+            "address": "Lạc Dương",
             "phone": "0263 3841 999",
-            "price_range": "50,000 VND (entrance) + 50,000 VND (jeep)"
+            "price_range": "50k + 50k xe jeep"
         },
         {
             "id": 7,
-            "name": "Windmills Cafe (Cối Xay Gió)",
-            "name_vi": "Cafe Cối Xay Gió",
+            "name": "Cafe Cối Xay Gió",
+            "name_vi": "Windmills Coffee",
             "type": "cafe",
-            "description": "Instagram-famous cafe with beautiful windmill decorations and flower gardens. Great for photos and relaxation.",
-            "description_vi": "Quán cà phê nổi tiếng Instagram với trang trí cối xay gió đẹp và vườn hoa. Tuyệt vời để chụp ảnh và thư giãn.",
+            "description": "Quán cafe Instagram-famous với cối xay gió đặc trưng và vườn hoa rực rỡ.",
             "opening_hours": {
                 "start": "07:00",
                 "end": "21:00"
             },
             "lat": 11.9478,
             "lng": 108.4521,
-            "google_map_link": "https://www.google.com/maps/place/Windmills+Cafe/@11.9478,108.4521",
+            "google_map_link": "https://maps.google.com/?q=11.9478,108.4521",
             "best_weather": [
                 "sunny",
                 "clear",
@@ -167,48 +159,45 @@
                 "rainy"
             ],
             "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400",
-            "address": "94 Nguyễn Đình Chiểu, Phường 9, Đà Lạt",
+            "address": "94 Nguyễn Đình Chiểu, Phường 9",
             "phone": "0263 3832 999",
-            "price_range": "35,000 - 80,000 VND"
+            "price_range": "35-80k"
         },
         {
             "id": 8,
-            "name": "Elephant Waterfall",
-            "name_vi": "Thác Voi",
+            "name": "Thác Voi",
+            "name_vi": "Elephant Waterfall",
             "type": "waterfall",
-            "description": "One of the largest and most beautiful waterfalls in the Central Highlands. An adventurous hike down to the base.",
-            "description_vi": "Một trong những thác nước lớn và đẹp nhất Tây Nguyên. Hành trình phiêu lưu xuống chân thác.",
+            "description": "Thác nước hùng vĩ với đường leo xuống chân thác mạo hiểm, xung quanh là rừng nguyên sinh.",
             "opening_hours": {
                 "start": "07:00",
                 "end": "17:00"
             },
             "lat": 11.7589,
             "lng": 108.2983,
-            "google_map_link": "https://www.google.com/maps/place/Elephant+Waterfall/@11.7589,108.2983",
+            "google_map_link": "https://maps.google.com/?q=11.7589,108.2983",
             "best_weather": [
                 "sunny",
                 "clear",
                 "cloudy"
             ],
             "image": "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=400",
-            "address": "Xã Nam Ban, Huyện Lâm Hà, Lâm Đồng",
-            "phone": "",
-            "price_range": "20,000 VND"
+            "address": "Xã Nam Ban, Lâm Hà",
+            "price_range": "20.000đ"
         },
         {
             "id": 9,
-            "name": "Nha Tho Con Ga (Chicken Church)",
-            "name_vi": "Nhà Thờ Con Gà",
+            "name": "Nhà Thờ Con Gà",
+            "name_vi": "Dalat Cathedral",
             "type": "indoor",
-            "description": "Iconic pink cathedral, a symbol of Da Lat. Beautiful architecture worth visiting in any weather.",
-            "description_vi": "Nhà thờ hồng mang tính biểu tượng, là biểu tượng của Đà Lạt. Kiến trúc đẹp đáng để ghé thăm bất kể thời tiết.",
+            "description": "Nhà thờ cổ kính với kiến trúc Gothic, biểu tượng của thành phố Đà Lạt.",
             "opening_hours": {
                 "start": "05:00",
                 "end": "19:00"
             },
             "lat": 11.9368,
             "lng": 108.4347,
-            "google_map_link": "https://www.google.com/maps/place/Da+Lat+Cathedral/@11.9368,108.4347",
+            "google_map_link": "https://maps.google.com/?q=11.9368,108.4347",
             "best_weather": [
                 "rainy",
                 "cloudy",
@@ -216,48 +205,44 @@
                 "clear"
             ],
             "image": "https://images.unsplash.com/photo-1548263594-a71ea65a8598?w=400",
-            "address": "15 Trần Phú, Phường 3, Đà Lạt",
-            "phone": "",
-            "price_range": "Free"
+            "address": "15 Trần Phú, Phường 3",
+            "price_range": "Miễn phí"
         },
         {
             "id": 10,
-            "name": "Tuyen Lam Lake",
-            "name_vi": "Hồ Tuyền Lâm",
+            "name": "Hồ Tuyền Lâm",
+            "name_vi": "Tuyen Lam Lake",
             "type": "viewpoint",
-            "description": "Beautiful lake surrounded by pine forests. Perfect for kayaking, cycling, and enjoying nature on sunny days.",
-            "description_vi": "Hồ đẹp bao quanh bởi rừng thông. Hoàn hảo để chèo kayak, đạp xe và tận hưởng thiên nhiên trong ngày nắng.",
+            "description": "Hồ nước ngọt lớn nhất Đà Lạt, lý tưởng cho kayak, đạp xe và picnic.",
             "opening_hours": {
                 "start": "06:00",
                 "end": "18:00"
             },
             "lat": 11.8739,
             "lng": 108.4278,
-            "google_map_link": "https://www.google.com/maps/place/Tuyen+Lam+Lake/@11.8739,108.4278",
+            "google_map_link": "https://maps.google.com/?q=11.8739,108.4278",
             "best_weather": [
                 "sunny",
                 "clear",
                 "cloudy"
             ],
             "image": "https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=400",
-            "address": "Phường 4, Đà Lạt",
-            "phone": "",
-            "price_range": "Free (activities extra)"
+            "address": "Phường 4",
+            "price_range": "Miễn phí"
         },
         {
             "id": 11,
-            "name": "An Cafe (24/7)",
+            "name": "An Cafe 24/7",
             "name_vi": "An Cafe",
             "type": "cafe",
-            "description": "Cozy 24-hour cafe perfect for night owls. Great coffee and peaceful atmosphere for late-night work or relaxation.",
-            "description_vi": "Quán cà phê 24 giờ ấm cúng, hoàn hảo cho những cú đêm. Cà phê ngon và không khí yên bình để làm việc hay thư giãn khuya.",
+            "description": "Quán cafe mở 24/7 với không gian ấm cúng, phù hợp làm việc và thư giãn đêm khuya.",
             "opening_hours": {
                 "start": "00:00",
                 "end": "23:59"
             },
             "lat": 11.9421,
             "lng": 108.4398,
-            "google_map_link": "https://www.google.com/maps/place/An+Cafe/@11.9421,108.4398",
+            "google_map_link": "https://maps.google.com/?q=11.9421,108.4398",
             "best_weather": [
                 "rainy",
                 "cloudy",
@@ -265,24 +250,23 @@
                 "clear"
             ],
             "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400",
-            "address": "12 Nguyễn Chí Thanh, Phường 1, Đà Lạt",
+            "address": "12 Nguyễn Chí Thanh, Phường 1",
             "phone": "0909 888 999",
-            "price_range": "30,000 - 70,000 VND"
+            "price_range": "30-70k"
         },
         {
             "id": 12,
             "name": "Memory Restaurant",
             "name_vi": "Nhà Hàng Memory",
             "type": "restaurant",
-            "description": "Upscale Vietnamese restaurant with mountain views. Perfect for romantic dinners or special occasions.",
-            "description_vi": "Nhà hàng Việt Nam cao cấp với tầm nhìn núi. Hoàn hảo cho bữa tối lãng mạn hoặc dịp đặc biệt.",
+            "description": "Nhà hàng cao cấp với view núi, chuyên ẩm thực Việt fusion và steak.",
             "opening_hours": {
                 "start": "10:00",
                 "end": "22:00"
             },
             "lat": 11.9356,
             "lng": 108.4378,
-            "google_map_link": "https://www.google.com/maps/place/Memory+Restaurant/@11.9356,108.4378",
+            "google_map_link": "https://maps.google.com/?q=11.9356,108.4378",
             "best_weather": [
                 "rainy",
                 "cloudy",
@@ -290,9 +274,310 @@
                 "clear"
             ],
             "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400",
-            "address": "6 Trần Hưng Đạo, Phường 3, Đà Lạt",
+            "address": "6 Trần Hưng Đạo, Phường 3",
             "phone": "0263 3511 888",
-            "price_range": "150,000 - 500,000 VND"
+            "price_range": "150-500k"
+        },
+        {
+            "id": 13,
+            "name": "Mê Linh Coffee Garden",
+            "name_vi": "Mê Linh Coffee",
+            "type": "cafe",
+            "description": "Vườn cà phê rộng lớn với view thung lũng, sân vườn thoáng đãng và đồ uống chất lượng.",
+            "opening_hours": {
+                "start": "07:00",
+                "end": "20:00"
+            },
+            "lat": 11.9123,
+            "lng": 108.4567,
+            "google_map_link": "https://maps.google.com/?q=11.9123,108.4567",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy"
+            ],
+            "image": "https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=400",
+            "address": "Phường 9",
+            "phone": "0263 3833 456",
+            "price_range": "40-90k"
+        },
+        {
+            "id": 14,
+            "name": "Đồi Chè Cầu Đất",
+            "name_vi": "Cau Dat Tea Hill",
+            "type": "viewpoint",
+            "description": "Đồi chè xanh ngát kéo dài tít tắp, điểm check-in sống ảo cực đẹp vào sáng sớm.",
+            "opening_hours": {
+                "start": "06:00",
+                "end": "17:00"
+            },
+            "lat": 11.8234,
+            "lng": 108.5123,
+            "google_map_link": "https://maps.google.com/?q=11.8234,108.5123",
+            "best_weather": [
+                "sunny",
+                "clear"
+            ],
+            "image": "https://images.unsplash.com/photo-1582793988951-9aed5509eb97?w=400",
+            "address": "Xuân Trường",
+            "price_range": "20.000đ"
+        },
+        {
+            "id": 15,
+            "name": "Vườn Hoa Thành Phố",
+            "name_vi": "Dalat Flower Garden",
+            "type": "garden",
+            "description": "Vườn hoa lớn nhất Đà Lạt với hàng trăm loài hoa đa sắc màu, tổ chức festival hoa hàng năm.",
+            "opening_hours": {
+                "start": "07:30",
+                "end": "17:00"
+            },
+            "lat": 11.9432,
+            "lng": 108.4256,
+            "google_map_link": "https://maps.google.com/?q=11.9432,108.4256",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy"
+            ],
+            "image": "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400",
+            "address": "2 Trần Nhân Tông",
+            "phone": "0263 3822 178",
+            "price_range": "50.000đ"
+        },
+        {
+            "id": 16,
+            "name": "ZooDoo Dalat",
+            "name_vi": "ZooDoo",
+            "type": "adventure",
+            "description": "Sở thú tương tác cho phép du khách chơi đùa với các loài động vật dễ thương như alpaca, cừu.",
+            "opening_hours": {
+                "start": "08:00",
+                "end": "17:00"
+            },
+            "lat": 11.8567,
+            "lng": 108.3987,
+            "google_map_link": "https://maps.google.com/?q=11.8567,108.3987",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy"
+            ],
+            "image": "https://images.unsplash.com/photo-1534361960057-19889db9621e?w=400",
+            "address": "Xã Xuân Thọ",
+            "phone": "0263 3789 456",
+            "price_range": "200.000đ"
+        },
+        {
+            "id": 17,
+            "name": "Cầu Đất Farm",
+            "name_vi": "Cau Dat Farm",
+            "type": "adventure",
+            "description": "Nông trại chè và cafe với tour tham quan quy trình sản xuất, có quán cafe view đẹp.",
+            "opening_hours": {
+                "start": "07:00",
+                "end": "17:00"
+            },
+            "lat": 11.8312,
+            "lng": 108.5067,
+            "google_map_link": "https://maps.google.com/?q=11.8312,108.5067",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy"
+            ],
+            "image": "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=400",
+            "address": "Xuân Trường",
+            "phone": "0263 3678 123",
+            "price_range": "50.000đ"
+        },
+        {
+            "id": 18,
+            "name": "Đường Hầm Đất Sét",
+            "name_vi": "Clay Tunnel",
+            "type": "indoor",
+            "description": "Công trình nghệ thuật từ đất sét với các tác phẩm điêu khắc độc đáo về lịch sử Đà Lạt.",
+            "opening_hours": {
+                "start": "07:00",
+                "end": "17:30"
+            },
+            "lat": 11.9134,
+            "lng": 108.4678,
+            "google_map_link": "https://maps.google.com/?q=11.9134,108.4678",
+            "best_weather": [
+                "rainy",
+                "cloudy",
+                "sunny",
+                "clear"
+            ],
+            "image": "https://images.unsplash.com/photo-1577083552792-a0d461cb1dd6?w=400",
+            "address": "Trần Lê, Phường 4",
+            "phone": "0263 3567 890",
+            "price_range": "60.000đ"
+        },
+        {
+            "id": 19,
+            "name": "Thiền Viện Trúc Lâm",
+            "name_vi": "Truc Lam Zen Monastery",
+            "type": "indoor",
+            "description": "Thiền viện lớn và yên bình nằm bên Hồ Tuyền Lâm, nơi lý tưởng để tĩnh tâm.",
+            "opening_hours": {
+                "start": "05:00",
+                "end": "17:00"
+            },
+            "lat": 11.8823,
+            "lng": 108.4345,
+            "google_map_link": "https://maps.google.com/?q=11.8823,108.4345",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy",
+                "rainy"
+            ],
+            "image": "https://images.unsplash.com/photo-1600618528240-fb9fc964b853?w=400",
+            "address": "Phường 3",
+            "price_range": "Miễn phí"
+        },
+        {
+            "id": 20,
+            "name": "Ga Đà Lạt",
+            "name_vi": "Dalat Railway Station",
+            "type": "indoor",
+            "description": "Nhà ga xe lửa cổ kính nhất Đông Dương với kiến trúc Pháp, có tuyến xe lửa đến Trại Mát.",
+            "opening_hours": {
+                "start": "07:00",
+                "end": "17:00"
+            },
+            "lat": 11.9423,
+            "lng": 108.4567,
+            "google_map_link": "https://maps.google.com/?q=11.9423,108.4567",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy",
+                "rainy"
+            ],
+            "image": "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400",
+            "address": "1 Quang Trung, Phường 10",
+            "phone": "0263 3834 409",
+            "price_range": "10.000đ"
+        },
+        {
+            "id": 21,
+            "name": "Horizon Coffee",
+            "name_vi": "Horizon Dalat",
+            "type": "cafe",
+            "description": "Quán cafe hiện đại với view 360 độ nhìn ra thành phố, thiết kế tối giản sang trọng.",
+            "opening_hours": {
+                "start": "07:00",
+                "end": "22:00"
+            },
+            "lat": 11.9278,
+            "lng": 108.4398,
+            "google_map_link": "https://maps.google.com/?q=11.9278,108.4398",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy",
+                "rainy"
+            ],
+            "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400",
+            "address": "26 Đào Duy Từ, Phường 4",
+            "phone": "0901 234 567",
+            "price_range": "45-120k"
+        },
+        {
+            "id": 22,
+            "name": "Đồi Mộng Mơ",
+            "name_vi": "Valley of Love",
+            "type": "viewpoint",
+            "description": "Thung lũng tình yêu với cảnh quan lãng mạn, hồ nước và các điểm check-in đặc sắc.",
+            "opening_hours": {
+                "start": "07:00",
+                "end": "17:00"
+            },
+            "lat": 11.9567,
+            "lng": 108.4234,
+            "google_map_link": "https://maps.google.com/?q=11.9567,108.4234",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy"
+            ],
+            "image": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400",
+            "address": "7 Mai Anh Đào, Phường 8",
+            "phone": "0263 3831 766",
+            "price_range": "60.000đ"
+        },
+        {
+            "id": 23,
+            "name": "Lẩu Bò Hào Phát",
+            "name_vi": "Hao Phat Hot Pot",
+            "type": "restaurant",
+            "description": "Quán lẩu bò nổi tiếng nhất Đà Lạt với nước dùng đậm đà và thịt bò tươi ngon.",
+            "opening_hours": {
+                "start": "10:00",
+                "end": "22:00"
+            },
+            "lat": 11.9389,
+            "lng": 108.4412,
+            "google_map_link": "https://maps.google.com/?q=11.9389,108.4412",
+            "best_weather": [
+                "rainy",
+                "cloudy",
+                "sunny",
+                "clear"
+            ],
+            "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400",
+            "address": "5B Nguyễn Văn Trỗi, Phường 2",
+            "phone": "0263 3825 555",
+            "price_range": "150-300k"
+        },
+        {
+            "id": 24,
+            "name": "Dalat Flower Park",
+            "name_vi": "Công Viên Hoa Đà Lạt",
+            "type": "garden",
+            "description": "Công viên hoa hiện đại với nhà kính, đài phun nước và các loài hoa quý hiếm.",
+            "opening_hours": {
+                "start": "07:00",
+                "end": "18:00"
+            },
+            "lat": 11.9398,
+            "lng": 108.4267,
+            "google_map_link": "https://maps.google.com/?q=11.9398,108.4267",
+            "best_weather": [
+                "sunny",
+                "clear",
+                "cloudy"
+            ],
+            "image": "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=400",
+            "address": "Phía đông Hồ Xuân Hương",
+            "price_range": "40.000đ"
+        },
+        {
+            "id": 25,
+            "name": "Ganesh Indian Restaurant",
+            "name_vi": "Nhà Hàng Ganesh",
+            "type": "restaurant",
+            "description": "Nhà hàng Ấn Độ chính thống với các món curry, naan và tandori chất lượng.",
+            "opening_hours": {
+                "start": "11:00",
+                "end": "22:00"
+            },
+            "lat": 11.9401,
+            "lng": 108.4378,
+            "google_map_link": "https://maps.google.com/?q=11.9401,108.4378",
+            "best_weather": [
+                "rainy",
+                "cloudy",
+                "sunny",
+                "clear"
+            ],
+            "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+            "address": "72 Trường Công Định, Phường 3",
+            "phone": "0263 3520 999",
+            "price_range": "100-250k"
         }
     ]
 }
