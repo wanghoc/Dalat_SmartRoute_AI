@@ -63,7 +63,7 @@ const placeDetails = {
         id: 4,
         title: "Valley of Love",
         location: "Phường 8, Dalat",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&crop=center",
+        image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=1920&h=1080&fit=crop&crop=center",
         rating: 4.5,
         reviewCount: 3421,
         category: "Nature",
@@ -223,7 +223,7 @@ const DetailPage = () => {
                         <div className="flex items-center gap-2">
                             <span className={`
                                 w-2 h-2 rounded-full 
-                                ${place.isOpen ? 'bg-emerald-500' : 'bg-red-500'}
+                                ${place.isOpen ? 'bg-blue-500' : 'bg-red-500'}
                             `} />
                             <span className="text-xs font-manrope font-medium uppercase tracking-wide text-gray-600">
                                 {place.isOpen ? 'Open Now' : 'Closed'}
@@ -333,7 +333,7 @@ const DetailPage = () => {
                 {/* ============================================================= */}
                 {/* DESIGNER'S TIP FEATURE BOX */}
                 {/* ============================================================= */}
-                <section className="bg-[#587F72]/10 rounded-2xl p-6 md:p-8">
+                <section className="bg-blue-700/10 rounded-2xl p-6 md:p-8">
                     <div className="flex items-start gap-4">
                         <div className="p-2 rounded-full bg-primary/20 flex-shrink-0">
                             <Sparkles className="w-5 h-5 text-primary" strokeWidth={1.5} />
@@ -358,7 +358,7 @@ const DetailPage = () => {
                     </h2>
                     <div className="rounded-3xl overflow-hidden shadow-lg">
                         <iframe
-                            src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.123456789!2d${place.coordinates.lng}!3d${place.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDU2JzMwLjAiTiAxMDjCsDI2JzE3LjAiRQ!5e0!3m2!1sen!2s!4v1703462400000!5m2!1sen!2s`}
+                            src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.123456789!2d${place.coordinates.lng}!3d${place.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDU2JzMwLjAiTiAxMDjCsDI2JzE3LjAiRQ!5e1!3m2!1sen!2s!4v1703462400000!5m2!1sen!2s`}
                             width="100%"
                             height="300"
                             style={{ border: 0 }}
@@ -380,7 +380,7 @@ const DetailPage = () => {
                     <button
                         className="
                             w-full py-4 px-6 rounded-2xl
-                            bg-primary hover:bg-primary/90
+                            bg-[#2C3E50] hover:bg-[#34495E]
                             text-white font-manrope font-semibold text-base
                             flex items-center justify-center gap-2
                             transition-colors duration-200

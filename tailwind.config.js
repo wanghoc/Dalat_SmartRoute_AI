@@ -7,10 +7,10 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Custom Dalat Vibe color palette - "The Misty Atelier"
+                // NUCLEAR RESET - Dalat Vibe color palette
                 background: '#FAFAF9',
-                primary: '#587F72',
-                accent: '#E09F87',
+                primary: '#064E3B',      // FORCED Deep Emerald Green
+                accent: '#2C3E50',       // Deep Navy
                 foreground: '#2D2D2D',
             },
             fontFamily: {

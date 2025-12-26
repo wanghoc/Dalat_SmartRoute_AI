@@ -1,5 +1,11 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom';
+import CityIntro from './pages/CityIntro';
+import Community from './pages/Community';
+import AIRecommendations from './pages/AIRecommendations';
+import LocalEats from './pages/LocalEats';
+import UserProfile from './pages/UserProfile';
+import { AuthProvider } from './context/AuthContext';
 import {
     Search,
     Sun,
@@ -18,12 +24,16 @@ import {
     ChevronRight,
     Sparkles,
     ExternalLink,
-    Map
+    Map,
+    User,
+    LogIn
 } from 'lucide-react';
 
 import ChatWidget from './components/ChatWidget';
 import DetailPage from './pages/Detail';
 import Weather from './pages/Weather';
+import { useAuth } from './context/AuthContext';
+import LoginModal from './components/LoginModal';
 
 // =============================================================================
 // DUMMY DATA - Replace with API calls in production
@@ -455,9 +465,61 @@ const PlaceCard = ({ place }) => {
 // COMPONENT: Header
 // =============================================================================
 
+const AvatarDropdownHeader = ({ user, onLogout, scrolled }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    return (
+        <div ref={dropdownRef} className="relative">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-slate-600/50 transition-all duration-300"
+            >
+                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            </button>
+
+            {isOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 py-2 bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-xl z-50">
+                    <div className="px-4 py-3 border-b border-white/10">
+                        <p className="font-manrope font-medium text-white text-sm">{user.name}</p>
+                        <p className="font-manrope text-xs text-white/50 truncate">{user.email}</p>
+                    </div>
+                    <div className="py-1">
+                        <Link
+                            to="/profile"
+                            onClick={() => setIsOpen(false)}
+                            className="w-full px-4 py-2.5 flex items-center gap-3 font-manrope text-sm text-white/80 hover:bg-white/10"
+                        >
+                            <User className="w-4 h-4" /> My Profile
+                        </Link>
+                        <button
+                            onClick={() => { onLogout(); setIsOpen(false); }}
+                            className="w-full px-4 py-2.5 flex items-center gap-3 font-manrope text-sm text-white/80 hover:bg-white/10"
+                        >
+                            <LogIn className="w-4 h-4" /> Logout
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
 const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const { user, isAuthenticated, logout } = useAuth();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -468,113 +530,193 @@ const Header = () => {
     }, []);
 
     const navLinks = [
-        { label: "About", href: "#about", isRoute: false },
-        { label: "Weather", href: "/weather", isRoute: true },
-        { label: "Destinations", href: "#destinations", isRoute: false },
-        { label: "Contact", href: "#contact", isRoute: false },
+        { label: "Home", to: "/" },
+        { label: "Weather", to: "/weather" },
+        { label: "Dalat", to: "/intro" },
+        { label: "Curation", to: "/ai-recs" },
+        { label: "Dining", to: "/local-eats" },
+        { label: "Community", to: "/community" },
     ];
 
     return (
-        <header
-            className={`
-                fixed top-0 left-0 right-0 z-50
-                transition-all duration-300 ease-out
-                ${scrolled
-                    ? 'bg-white/70 backdrop-blur-md shadow-sm'
-                    : 'bg-transparent'
-                }
-            `}
-            role="banner"
-        >
-            <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12 py-4 flex items-center justify-between">
-                {/* Logo */}
-                <Link
-                    to="/"
-                    className={`font-tenor text-xl md:text-2xl tracking-wide transition-colors duration-300 ${scrolled ? 'text-primary' : 'text-white'
-                        }`}
-                    aria-label="Dalat Vibe Home"
-                >
-                    Dalat Vibe
-                </Link>
+        <>
+            <header
+                className={`
+                    fixed top-0 left-0 right-0 z-50
+                    transition-all duration-300 ease-out
+                    ${scrolled
+                        ? 'bg-white/70 backdrop-blur-md shadow-sm'
+                        : 'bg-transparent'
+                    }
+                `}
+                role="banner"
+            >
+                <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12 py-4 flex items-center justify-between">
+                    {/* Logo - NUCLEAR FORCE DEEP GREEN */}
+                    <Link
+                        to="/"
+                        className="font-tenor text-xl md:text-2xl tracking-wide transition-colors duration-300"
+                        style={{ color: scrolled ? '#2C3E50' : '#FFFFFF' }}
+                        aria-label="Dalat Vibe Home"
+                    >
+                        Dalat Vibe
+                    </Link>
 
-                {/* Desktop Navigation */}
-                <nav className="hidden md:flex items-center gap-8">
-                    {navLinks.map((link) => (
-                        link.isRoute ? (
-                            <Link
-                                key={link.label}
-                                to={link.href}
-                                className={`font-manrope text-sm transition-colors ${scrolled
-                                    ? 'text-foreground/70 hover:text-primary'
-                                    : 'text-white/80 hover:text-white'
-                                    }`}
-                            >
-                                {link.label}
-                            </Link>
-                        ) : (
-                            <a
-                                key={link.label}
-                                href={link.href}
-                                className={`font-manrope text-sm transition-colors ${scrolled
-                                    ? 'text-foreground/70 hover:text-primary'
-                                    : 'text-white/80 hover:text-white'
-                                    }`}
-                            >
-                                {link.label}
-                            </a>
-                        )
-                    ))}
-                </nav>
-
-                {/* Mobile Menu Toggle */}
-                <button
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    className={`
-                        md:hidden p-2 -mr-2 rounded-full
-                        transition-colors
-                        ${scrolled ? 'hover:bg-primary/5' : 'hover:bg-white/10'}
-                    `}
-                    aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-                    aria-expanded={menuOpen}
-                >
-                    {menuOpen ? (
-                        <X className={`w-5 h-5 ${scrolled ? 'text-foreground' : 'text-white'}`} strokeWidth={1.5} />
-                    ) : (
-                        <Menu className={`w-5 h-5 ${scrolled ? 'text-foreground' : 'text-white'}`} strokeWidth={1.5} />
-                    )}
-                </button>
-            </div>
-
-            {/* Mobile Menu */}
-            {menuOpen && (
-                <nav className="
-                    md:hidden bg-white/95 backdrop-blur-md border-t border-foreground/5
-                    animate-fade-in-up
-                ">
-                    <div className="max-w-7xl mx-auto px-5 py-6 space-y-4">
+                    {/* Desktop Navigation */}
+                    <nav className="hidden md:flex items-center gap-8">
                         {navLinks.map((link) => (
-                            link.isRoute ? (
-                                <Link
+                            link.to ? (
+                                <NavLink
                                     key={link.label}
-                                    to={link.href}
-                                    className="block font-manrope text-foreground/80 hover:text-primary transition-colors"
+                                    to={link.to}
+                                    className={({ isActive }) => `
+                                        relative font-manrope text-sm py-1
+                                        transition-colors duration-300
+                                        ${scrolled
+                                            ? isActive
+                                                ? 'text-[#2C3E50]'    // Deep Green active
+                                                : 'text-foreground/70 hover:text-[#2C3E50]'  // Deep Green hover
+                                            : isActive
+                                                ? 'text-white'
+                                                : 'text-white/80 hover:text-white'
+                                        }
+                                    `}
                                 >
-                                    {link.label}
-                                </Link>
+                                    {({ isActive }) => (
+                                        <>
+                                            {link.label}
+                                            <span className={`
+                                                absolute bottom-0 left-0 right-0 h-0.5
+                                                rounded-full transition-transform duration-300 origin-left
+                                                ${scrolled ? 'bg-[#2C3E50]' : 'bg-white'}
+                                                ${isActive ? 'scale-x-100' : 'scale-x-0'}
+                                            `} />
+                                        </>
+                                    )}
+                                </NavLink>
                             ) : (
                                 <a
                                     key={link.label}
                                     href={link.href}
-                                    className="block font-manrope text-foreground/80 hover:text-primary transition-colors"
+                                    className={`font-manrope text-sm transition-colors ${scrolled
+                                        ? 'text-foreground/70 hover:text-primary'
+                                        : 'text-white/80 hover:text-white'
+                                        }`}
                                 >
                                     {link.label}
                                 </a>
                             )
                         ))}
+                    </nav>
+
+                    {/* Auth Controls */}
+                    <div className="flex items-center gap-4">
+                        {isAuthenticated && user ? (
+                            <AvatarDropdownHeader user={user} onLogout={logout} scrolled={scrolled} />
+                        ) : (
+                            <button
+                                onClick={() => setLoginModalOpen(true)}
+                                className={`
+                                    hidden md:flex items-center gap-2 px-4 py-2 rounded-full
+                                    font-manrope text-sm font-medium transition-all
+                                    ${scrolled
+                                        ? 'bg-slate-800 text-white hover:bg-slate-700'
+                                        : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm'
+                                    }
+                                `}
+                            >
+                                Login
+                            </button>
+                        )}
+
+                        {/* Mobile Menu Toggle */}
+                        <button
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            className={`
+                                md:hidden p-2 -mr-2 rounded-full
+                                transition-colors
+                                ${scrolled ? 'hover:bg-primary/5' : 'hover:bg-white/10'}
+                            `}
+                            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                            aria-expanded={menuOpen}
+                        >
+                            {menuOpen ? (
+                                <X className={`w-5 h-5 ${scrolled ? 'text-foreground' : 'text-white'}`} strokeWidth={1.5} />
+                            ) : (
+                                <Menu className={`w-5 h-5 ${scrolled ? 'text-foreground' : 'text-white'}`} strokeWidth={1.5} />
+                            )}
+                        </button>
                     </div>
-                </nav>
-            )}
-        </header>
+                </div>
+
+                {/* Mobile Menu */}
+                {menuOpen && (
+                    <nav className="md:hidden bg-white/95 backdrop-blur-md border-t border-foreground/5 animate-fade-in-up">
+                        <div className="max-w-7xl mx-auto px-5 py-6 space-y-4">
+                            {navLinks.map((link) => (
+                                link.to ? (
+                                    <NavLink
+                                        key={link.label}
+                                        to={link.to}
+                                        onClick={() => setMenuOpen(false)}
+                                        className={({ isActive }) => `
+                                            block font-manrope py-3 px-4 rounded-xl
+                                            transition-colors duration-200
+                                            ${isActive
+                                                ? 'bg-slate-800/10 text-slate-700'
+                                                : 'text-foreground/80 hover:bg-gray-50 hover:text-primary'
+                                            }
+                                        `}
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                ) : (
+                                    <a
+                                        key={link.label}
+                                        href={link.href}
+                                        className="block font-manrope text-foreground/80 hover:text-primary transition-colors py-3 px-4"
+                                    >
+                                        {link.label}
+                                    </a>
+                                )
+                            ))}
+
+                            {/* Mobile Auth */}
+                            <div className="pt-4 border-t border-gray-100">
+                                {isAuthenticated && user ? (
+                                    <div className="space-y-2">
+                                        <Link
+                                            to="/profile"
+                                            onClick={() => setMenuOpen(false)}
+                                            className="flex items-center gap-3 py-3 px-4 rounded-xl text-foreground/80 hover:bg-gray-50"
+                                        >
+                                            <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full" />
+                                            <span className="font-manrope font-medium">{user.name}</span>
+                                        </Link>
+                                        <button
+                                            onClick={() => { logout(); setMenuOpen(false); }}
+                                            className="w-full py-3 px-4 rounded-xl flex items-center gap-3 text-foreground/80 hover:bg-gray-50 font-manrope"
+                                        >
+                                            <LogIn className="w-5 h-5" /> Logout
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => { setLoginModalOpen(true); setMenuOpen(false); }}
+                                        className="w-full py-3 bg-slate-800 text-white font-manrope font-medium rounded-xl hover:bg-slate-700 transition-colors"
+                                    >
+                                        Login
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </nav>
+                )}
+            </header>
+
+            {/* Login Modal */}
+            <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
+        </>
     );
 };
 
@@ -599,18 +741,18 @@ const HeroSection = () => {
                 {/* Strong Dark Overlay for maximum text readability */}
                 <div className="absolute inset-0 bg-black/60" />
 
-                {/* Warm Accent Gradient - subtle overlay */}
+                {/* Cool Misty Gradient - Deep blue tone */}
                 <div className="
                     absolute inset-0 
-                    bg-gradient-to-r from-primary/5 via-transparent to-accent/5
-                    mix-blend-overlay
+                    bg-gradient-to-br from-slate-900/30 via-blue-900/20 to-transparent
+                    mix-blend-multiply
                 " />
 
-                {/* Content Container - Cinematic Wide Layout */}
+                {/* Content Container - Aligned with Header */}
                 <div className="absolute inset-0 flex items-center">
-                    <div className="w-full max-w-7xl mx-auto px-10 md:px-16 lg:px-20">
+                    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         {/* Split Layout: Text Left | Weather Right */}
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-16">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 lg:gap-16">
 
                             {/* LEFT SIDE: The Slogan (Majestic & Clean) */}
                             <div className="flex-1 max-w-2xl order-2 md:order-1">
@@ -667,31 +809,44 @@ const HeroSection = () => {
 // COMPONENT: CuratedSection
 // =============================================================================
 
-const CuratedSection = ({ title, subtitle, places }) => {
+const CuratedSection = ({ title, subtitle, places, viewAllLink }) => {
     return (
         <section
             className="py-10 md:py-16"
             aria-label={title}
             id="destinations"
         >
-            {/* Section Header */}
-            <div className="px-5 md:px-8 lg:px-12 max-w-7xl mx-auto mb-6 md:mb-8">
-                <div className="flex items-center gap-2 mb-1">
-                    <Sparkles className="w-4 h-4 text-accent" strokeWidth={1.5} />
-                    <span className="text-xs font-manrope font-medium text-accent uppercase tracking-wider">
-                        {subtitle}
-                    </span>
+            {/* Section Header with View All Link */}
+            <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-6 md:mb-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <Sparkles className="w-4 h-4 text-accent" strokeWidth={1.5} />
+                            <span className="text-xs font-manrope font-medium text-accent uppercase tracking-wider">
+                                {subtitle}
+                            </span>
+                        </div>
+                        <h2 className="font-tenor text-2xl md:text-3xl text-foreground">
+                            {title}
+                        </h2>
+                    </div>
+                    {viewAllLink && (
+                        <Link
+                            to={viewAllLink}
+                            className="font-manrope text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                        >
+                            View All Recommendations
+                            <ChevronRight className="w-4 h-4" />
+                        </Link>
+                    )}
                 </div>
-                <h2 className="font-tenor text-2xl md:text-3xl text-foreground">
-                    {title}
-                </h2>
             </div>
 
-            {/* Horizontal Scroll Container */}
+            {/* Horizontal Scroll Container - No See More Card */}
             <div
                 className="
           flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory
-          scrollbar-hide px-5 md:px-8 lg:px-12 pb-2
+          scrollbar-hide px-4 sm:px-6 lg:px-8 pb-2
         "
                 role="region"
                 aria-label="Scroll through recommended places"
@@ -699,22 +854,6 @@ const CuratedSection = ({ title, subtitle, places }) => {
                 {places.map((place) => (
                     <PlaceCard key={place.id} place={place} />
                 ))}
-
-                {/* "See More" Card */}
-                <div className="
-          flex-shrink-0 w-[200px] md:w-[240px] snap-start
-          flex items-center justify-center
-          rounded-2xl border-2 border-dashed border-primary/20
-          bg-primary/5
-          cursor-pointer hover:bg-primary/10 transition-colors
-        ">
-                    <div className="text-center px-6">
-                        <ChevronRight className="w-8 h-8 text-primary/60 mx-auto mb-2" strokeWidth={1.5} />
-                        <span className="font-manrope text-sm text-primary/80">
-                            Explore all<br />destinations
-                        </span>
-                    </div>
-                </div>
             </div>
         </section>
     );
@@ -727,11 +866,11 @@ const CuratedSection = ({ title, subtitle, places }) => {
 const MapSection = () => {
     return (
         <section
-            className="py-10 md:py-16 px-5 md:px-8 lg:px-12"
+            className="py-10 md:py-16"
             aria-label="Interactive Map"
             id="contact"
         >
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <div className="mb-6 md:mb-8">
                     <div className="flex items-center gap-2 mb-1">
@@ -748,17 +887,17 @@ const MapSection = () => {
                     </p>
                 </div>
 
-                {/* Google Maps Embed - Zoomed to Dalat City Center (Xuan Huong Lake area) */}
+                {/* Google Maps Embed - SATELLITE/HYBRID Mode for terrain texture */}
                 <div className="rounded-xl overflow-hidden shadow-lg">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7812.123456789!2d108.4378!3d11.9404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317112d959f88991%3A0x9c30ef02c36e7b25!2sXuan%20Huong%20Lake!5e0!3m2!1sen!2s!4v1703462400000!5m2!1sen!2s&z=15"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15624.246913578!2d108.4378!3d11.9404!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317112d959f88991%3A0x9c30ef02c36e7b25!2sXuan%20Huong%20Lake!5e1!3m2!1sen!2s!4v1703462400000!5m2!1sen!2s"
                         width="100%"
                         height="400"
                         style={{ border: 0 }}
                         allowFullScreen=""
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
-                        title="Map of Dalat City Center, Vietnam"
+                        title="Satellite Map of Dalat City Center, Vietnam"
                         className="w-full h-96"
                     />
                 </div>
@@ -788,7 +927,7 @@ const Footer = () => {
 
     return (
         <footer
-            className="bg-[#2C5F48] text-white"
+            className="bg-[#11163B] text-white"
             role="contentinfo"
         >
             <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-12 py-8 md:py-10">
@@ -855,7 +994,7 @@ const Footer = () => {
                         </h3>
                         <p className="font-manrope text-xs text-white/60 leading-relaxed">
                             Designed & Developed by<br />
-                            <span className="text-white/80">Hallym University</span> × <span className="text-white/80">Dalat University</span>
+                            <span className="text-white/80">Dragon Ho</span>
                         </p>
                     </div>
                 </div>
@@ -864,7 +1003,7 @@ const Footer = () => {
                 <div className="mt-6 pt-4 border-t border-white/10">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                         <p className="font-manrope text-xs text-white/50">
-                            © 2025 <span className="text-white/70">Hallym University x Dalat University</span>. All rights reserved.
+                            © 2025 <span className="text-white/70">Dragon Ho</span>. All rights reserved.
                         </p>
                         <div className="flex items-center gap-4">
                             <a href="#privacy" className="font-manrope text-xs text-white/40 hover:text-white/70 transition-colors">
@@ -886,6 +1025,108 @@ const Footer = () => {
 // =============================================================================
 
 // =============================================================================
+// COMPONENT: LocalEatsSection (Static 3x2 Grid)
+// =============================================================================
+
+const localEatsData = [
+    {
+        id: 101,
+        name: "Bánh Căn Cô Hương",
+        specialty: "Miniature rice cakes with quail eggs",
+        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop"
+    },
+    {
+        id: 102,
+        name: "Kem Bơ Thanh Thảo",
+        specialty: "Legendary avocado ice cream since 1985",
+        image: "https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=400&h=300&fit=crop"
+    },
+    {
+        id: 103,
+        name: "Bánh Ướt Lòng Gà",
+        specialty: "Steamed rice rolls with chicken",
+        image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop"
+    },
+    {
+        id: 104,
+        name: "Nem Nướng Bà Hùng",
+        specialty: "Grilled pork sausage wraps",
+        image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&h=300&fit=crop"
+    },
+    {
+        id: 105,
+        name: "Bún Bò Huế Cô Giang",
+        specialty: "Spicy beef noodle soup",
+        image: "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=400&h=300&fit=crop"
+    },
+    {
+        id: 106,
+        name: "Bánh Tráng Nướng",
+        specialty: "Vietnamese pizza - crispy rice paper",
+        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop"
+    }
+];
+
+const LocalEatsSection = () => {
+    return (
+        <section className="py-10 md:py-16" aria-label="Local Hidden Gems">
+            {/* Section Header with View All Link */}
+            <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-6 md:mb-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <Heart className="w-4 h-4 text-accent" strokeWidth={1.5} />
+                            <span className="text-xs font-manrope font-medium text-accent uppercase tracking-wider">
+                                Local Favorites
+                            </span>
+                        </div>
+                        <h2 className="font-tenor text-2xl md:text-3xl text-foreground">
+                            The Dalat Palate: Hidden Local Gems
+                        </h2>
+                    </div>
+                    <Link
+                        to="/local-eats"
+                        className="font-manrope text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                    >
+                        Discover Local Eats
+                        <ChevronRight className="w-4 h-4" />
+                    </Link>
+                </div>
+            </div>
+
+            {/* Static 3x2 Grid */}
+            <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {localEatsData.map((item) => (
+                        <div
+                            key={item.id}
+                            className="group relative rounded-2xl overflow-hidden aspect-[4/3] cursor-pointer"
+                        >
+                            <img
+                                src={item.image}
+                                alt={item.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            {/* Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                            {/* Content */}
+                            <div className="absolute bottom-0 left-0 right-0 p-4">
+                                <h3 className="font-tenor text-lg text-white mb-1">
+                                    {item.name}
+                                </h3>
+                                <p className="font-manrope text-sm text-white/70">
+                                    {item.specialty}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// =============================================================================
 // COMPONENT: HomePage
 // =============================================================================
 
@@ -900,19 +1141,18 @@ const HomePage = () => {
             <main role="main">
                 <HeroSection />
 
-                {/* Floating Search Bar - Wide Desktop Style */}
-                <div className="px-5 md:px-8 lg:px-12 -mt-10 md:-mt-12 relative z-10 max-w-3xl mx-auto">
-                    <SearchBar onSearch={handleSearch} />
-                </div>
-
-                {/* Curated Recommendations */}
-                <div className="mt-12 md:mt-16">
+                {/* Section 1: Curated Recommendations (Weather-Based) */}
+                <div className="mt-16 md:mt-20">
                     <CuratedSection
-                        title="Curated for You"
+                        title="Forecast-Based Curation: Today's Perfect Match"
                         subtitle="AI Picks"
                         places={recommendedPlaces}
+                        viewAllLink="/ai-recs"
                     />
                 </div>
+
+                {/* Section 2: Local Hidden Gems (Static Grid) */}
+                <LocalEatsSection />
 
                 {/* Interactive Map Section */}
                 <MapSection />
@@ -928,20 +1168,27 @@ const HomePage = () => {
 function App() {
     return (
         <BrowserRouter>
-            <div className="min-h-screen bg-background">
-                <Header />
+            <AuthProvider>
+                <div className="min-h-screen bg-background">
+                    <Header />
 
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/weather" element={<Weather />} />
-                    <Route path="/place/:id" element={<DetailPage />} />
-                </Routes>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/intro" element={<CityIntro />} />
+                        <Route path="/weather" element={<Weather />} />
+                        <Route path="/community" element={<Community />} />
+                        <Route path="/ai-recs" element={<AIRecommendations />} />
+                        <Route path="/local-eats" element={<LocalEats />} />
+                        <Route path="/profile" element={<UserProfile />} />
+                        <Route path="/place/:id" element={<DetailPage />} />
+                    </Routes>
 
-                <Footer />
+                    <Footer />
 
-                {/* Global Floating Chat Widget */}
-                <ChatWidget />
-            </div>
+                    {/* Global Floating Chat Widget */}
+                    <ChatWidget />
+                </div>
+            </AuthProvider>
         </BrowserRouter>
     );
 }
