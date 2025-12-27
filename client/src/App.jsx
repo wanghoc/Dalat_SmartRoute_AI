@@ -181,17 +181,16 @@ const WeatherColumn = () => {
     useEffect(() => {
         const fetchWeather = async () => {
             try {
-                const response = await fetch(
-                    'https://api.openweathermap.org/data/2.5/weather?lat=11.94&lon=108.43&units=metric&lang=en&appid=e4b5202e7eabe536609be876b6bb82cb'
-                );
+                // Fetch through backend proxy to protect API key
+                const response = await fetch('/api/weather');
                 if (!response.ok) throw new Error('Weather data unavailable');
                 const data = await response.json();
                 setWeather({
-                    temp: Math.round(data.main.temp),
-                    humidity: data.main.humidity,
-                    windSpeed: data.wind.speed,
-                    description: capitalizeWords(data.weather[0].description),
-                    weatherId: data.weather[0].id
+                    temp: data.temp,
+                    humidity: data.humidity,
+                    windSpeed: data.windSpeed,
+                    description: capitalizeWords(data.description),
+                    weatherId: data.weatherId
                 });
             } catch (err) {
                 setError(err.message);
