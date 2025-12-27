@@ -1,12 +1,20 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Utensils,
     MapPin,
     Star,
     ArrowLeft,
-    Clock
+    Clock,
+    Loader2
 } from 'lucide-react';
+
+// =============================================================================
+// API Configuration
+// =============================================================================
+const API_BASE = 'http://localhost:3001/api';
 
 // =============================================================================
 // Animation Variants
@@ -30,172 +38,68 @@ const stagger = {
 };
 
 // =============================================================================
-// Mock Data - Local Hidden Gems
-// =============================================================================
-
-const localEats = [
-    {
-        id: 1,
-        name: "Bánh Căn Cô Hương",
-        specialty: "Bánh Căn",
-        description: "Miniature rice cakes with quail eggs, beloved by locals for 30+ years",
-        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop",
-        rating: 4.9,
-        priceRange: "₫",
-        location: "Phan Đình Phùng Street",
-        hours: "6:00 AM - 10:00 AM"
-    },
-    {
-        id: 2,
-        name: "Kem Bơ Thanh Thảo",
-        specialty: "Kem Bơ",
-        description: "Legendary avocado ice cream - a Dalat signature since 1985",
-        image: "https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=600&h=400&fit=crop",
-        rating: 4.8,
-        priceRange: "₫",
-        location: "Near Dalat Market",
-        hours: "10:00 AM - 10:00 PM"
-    },
-    {
-        id: 3,
-        name: "Bánh Ướt Lòng Gà Bà Năm",
-        specialty: "Bánh Ướt Lòng Gà",
-        description: "Steamed rice rolls with chicken organs - local breakfast staple",
-        image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&h=400&fit=crop",
-        rating: 4.7,
-        priceRange: "₫",
-        location: "Tang Bat Ho Street",
-        hours: "5:30 AM - 9:00 AM"
-    },
-    {
-        id: 4,
-        name: "Nem Nướng Bà Hùng",
-        specialty: "Nem Nướng",
-        description: "Grilled pork sausage wraps - perfect street food experience",
-        image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&h=400&fit=crop",
-        rating: 4.6,
-        priceRange: "₫₫",
-        location: "Hai Bà Trưng Street",
-        hours: "2:00 PM - 9:00 PM"
-    },
-    {
-        id: 5,
-        name: "Bún Bò Huế Cô Giang",
-        specialty: "Bún Bò",
-        description: "Spicy beef noodle soup - warming highland comfort food",
-        image: "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&h=400&fit=crop",
-        rating: 4.7,
-        priceRange: "₫",
-        location: "Nguyễn Văn Trỗi",
-        hours: "6:00 AM - 2:00 PM"
-    },
-    {
-        id: 6,
-        name: "Bánh Tráng Nướng Chợ Đêm",
-        specialty: "Bánh Tráng Nướng",
-        description: "Vietnamese pizza - crispy rice paper with toppings",
-        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop",
-        rating: 4.5,
-        priceRange: "₫",
-        location: "Night Market Area",
-        hours: "5:00 PM - 11:00 PM"
-    },
-    {
-        id: 7,
-        name: "Phở Gà Lâm Viên",
-        specialty: "Phở Gà",
-        description: "Chicken pho with highland herbs - soul-warming bowls",
-        image: "https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=600&h=400&fit=crop",
-        rating: 4.6,
-        priceRange: "₫",
-        location: "Lâm Viên Square",
-        hours: "6:00 AM - 12:00 PM"
-    },
-    {
-        id: 8,
-        name: "Sữa Đậu Nành Nóng",
-        specialty: "Hot Soy Milk",
-        description: "Fresh hot soy milk with youtiao - morning ritual",
-        image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&h=400&fit=crop",
-        rating: 4.4,
-        priceRange: "₫",
-        location: "City Center Streets",
-        hours: "5:00 AM - 9:00 AM"
-    },
-    {
-        id: 9,
-        name: "Xôi Gà Chợ Đà Lạt",
-        specialty: "Xôi Gà",
-        description: "Sticky rice with shredded chicken - hearty morning meal",
-        image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600&h=400&fit=crop",
-        rating: 4.5,
-        priceRange: "₫",
-        location: "Dalat Central Market",
-        hours: "5:00 AM - 10:00 AM"
-    }
-];
-
-// =============================================================================
 // Restaurant Card Component
 // =============================================================================
 
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCard = ({ restaurant, isVietnamese }) => {
+    const name = isVietnamese && restaurant.titleVi ? restaurant.titleVi : restaurant.title;
+    const description = isVietnamese && restaurant.descriptionVi ? restaurant.descriptionVi : restaurant.description;
+    const location = isVietnamese && restaurant.locationVi ? restaurant.locationVi : restaurant.location;
+
     return (
-        <motion.div
-            variants={fadeInUp}
-            className="group bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden hover:bg-white/10 transition-all duration-300"
-        >
-            {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                    src={restaurant.image}
-                    alt={restaurant.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                {/* Price Badge */}
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                    <span className="font-manrope font-bold text-sm text-slate-900">
-                        {restaurant.priceRange}
-                    </span>
-                </div>
-                {/* Specialty Tag */}
-                <div className="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                    <span className="font-manrope text-xs text-white">
-                        {restaurant.specialty}
-                    </span>
-                </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-                <h3 className="font-tenor text-xl text-white mb-2">
-                    {restaurant.name}
-                </h3>
-
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-3">
-                    <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                    <span className="font-manrope text-sm text-white/70">{restaurant.rating}</span>
-                </div>
-
-                {/* Description */}
-                <p className="font-manrope text-sm text-white/60 leading-relaxed mb-4">
-                    {restaurant.description}
-                </p>
-
-                {/* Meta */}
-                <div className="space-y-2 pt-4 border-t border-white/10">
-                    <div className="flex items-center gap-2 text-white/40">
-                        <MapPin className="w-3.5 h-3.5" />
-                        <span className="font-manrope text-xs">{restaurant.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-white/40">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span className="font-manrope text-xs">{restaurant.hours}</span>
+        <Link to={`/place/${restaurant.id}`}>
+            <motion.div
+                variants={fadeInUp}
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden hover:bg-white/10 transition-all duration-300 cursor-pointer"
+            >
+                {/* Image */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                        src={restaurant.imagePath}
+                        alt={name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {/* Category Badge */}
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                        <span className="font-manrope font-bold text-sm text-slate-900">
+                            {restaurant.category?.name || 'Restaurant'}
+                        </span>
                     </div>
                 </div>
-            </div>
-        </motion.div>
+
+                {/* Content */}
+                <div className="p-5">
+                    <h3 className="font-tenor text-xl text-white mb-2">
+                        {name}
+                    </h3>
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-1 mb-3">
+                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                        <span className="font-manrope text-sm text-white/70">{restaurant.rating || 4.5}</span>
+                    </div>
+
+                    {/* Description */}
+                    <p className="font-manrope text-sm text-white/60 leading-relaxed mb-4 line-clamp-2">
+                        {description}
+                    </p>
+
+                    {/* Meta */}
+                    <div className="space-y-2 pt-4 border-t border-white/10">
+                        <div className="flex items-center gap-2 text-white/40">
+                            <MapPin className="w-3.5 h-3.5" />
+                            <span className="font-manrope text-xs">{location}</span>
+                        </div>
+                        {restaurant.openingHours && (
+                            <div className="flex items-center gap-2 text-white/40">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span className="font-manrope text-xs">{restaurant.openingHours}</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </motion.div>
+        </Link>
     );
 };
 
@@ -204,6 +108,38 @@ const RestaurantCard = ({ restaurant }) => {
 // =============================================================================
 
 const LocalEats = () => {
+    const { t, i18n } = useTranslation();
+    const [places, setPlaces] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const isVietnamese = i18n.language === 'vi';
+
+    // Fetch restaurant/food places from API
+    useEffect(() => {
+        const fetchPlaces = async () => {
+            try {
+                setLoading(true);
+                // Fetch all places and filter for food-related categories
+                const response = await fetch(`${API_BASE}/places`);
+                const data = await response.json();
+
+                // Filter for restaurants and street food
+                const foodCategories = ['Restaurant', 'Street Food', 'Café'];
+                const foodPlaces = data.filter(place =>
+                    foodCategories.includes(place.category?.name)
+                );
+
+                setPlaces(foodPlaces);
+            } catch (error) {
+                console.error('Failed to fetch places:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPlaces();
+    }, []);
+
     return (
         <article className="min-h-screen bg-slate-950 text-white">
             {/* Hero Section */}
@@ -218,7 +154,7 @@ const LocalEats = () => {
                         className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors mb-8"
                     >
                         <ArrowLeft className="w-4 h-4" />
-                        <span className="font-manrope text-sm">Back to Home</span>
+                        <span className="font-manrope text-sm">{t('aiRecs.backToHome')}</span>
                     </Link>
 
                     <motion.div
@@ -233,7 +169,7 @@ const LocalEats = () => {
                         >
                             <Utensils className="w-5 h-5 text-white/60" />
                             <span className="font-manrope text-sm text-white/50 uppercase tracking-[0.3em]">
-                                Local Discoveries
+                                {t('localEats.eyebrow')}
                             </span>
                         </motion.div>
 
@@ -242,16 +178,15 @@ const LocalEats = () => {
                             variants={fadeInUp}
                             className="font-tenor text-4xl md:text-5xl lg:text-6xl leading-tight mb-6"
                         >
-                            Authentic Flavors
-                            <span className="block text-white/60">of the Highlands</span>
+                            {t('localEats.title')}
+                            <span className="block text-white/60">{t('localEats.subtitle')}</span>
                         </motion.h1>
 
                         <motion.p
                             variants={fadeInUp}
                             className="font-manrope font-light text-lg text-slate-400 max-w-2xl"
                         >
-                            Hidden gems where locals actually eat. No tourist traps,
-                            just genuine Dalat culinary traditions passed down through generations.
+                            {t('localEats.description')}
                         </motion.p>
                     </motion.div>
                 </div>
@@ -260,17 +195,27 @@ const LocalEats = () => {
             {/* Results Grid */}
             <section className="pb-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={stagger}
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                    >
-                        {localEats.map((restaurant) => (
-                            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                        ))}
-                    </motion.div>
+                    {loading ? (
+                        <div className="flex items-center justify-center py-20">
+                            <Loader2 className="w-8 h-8 text-white animate-spin" />
+                        </div>
+                    ) : (
+                        <motion.div
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={stagger}
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        >
+                            {places.map((restaurant) => (
+                                <RestaurantCard
+                                    key={restaurant.id}
+                                    restaurant={restaurant}
+                                    isVietnamese={isVietnamese}
+                                />
+                            ))}
+                        </motion.div>
+                    )}
                 </div>
             </section>
         </article>

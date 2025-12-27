@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 // =============================================================================
-// Categories
+// Categories - Extended with Food Types
 // =============================================================================
 
 const categories = [
@@ -18,22 +18,27 @@ const categories = [
     { name: 'Adventure', nameVi: 'Phiêu lưu' },
     { name: 'Park', nameVi: 'Công viên' },
     { name: 'Local Experience', nameVi: 'Trải nghiệm địa phương' },
-    { name: 'Scenic', nameVi: 'Phong cảnh' }
+    { name: 'Scenic', nameVi: 'Phong cảnh' },
+    { name: 'Restaurant', nameVi: 'Nhà hàng' },
+    { name: 'Street Food', nameVi: 'Ẩm thực đường phố' },
+    { name: 'Temple', nameVi: 'Chùa' },
+    { name: 'Garden', nameVi: 'Vườn hoa' }
 ];
 
 // =============================================================================
-// Places
+// Places - Comprehensive 35+ Locations
 // =============================================================================
 
 const places = [
+    // ==================== Nature & Scenic ====================
     {
         title: 'Langbiang Mountain',
         titleVi: 'Núi Langbiang',
         location: 'Lạc Dương District',
         locationVi: 'Huyện Lạc Dương',
         description: 'A mystical peak wrapped in morning mist, offering panoramic views of the highlands. The mountain stands at 2,167m and is sacred to the K\'ho people.',
-        descriptionVi: 'Một đỉnh núi huyền bí bao phủ trong sương mù buổi sáng, mang đến tầm nhìn toàn cảnh vùng cao nguyên.',
-        imagePath: '/images/langbiang-mountain.jpg',
+        descriptionVi: 'Đỉnh núi huyền bí cao 2.167m, bao phủ trong sương mù buổi sáng, mang đến tầm nhìn toàn cảnh vùng cao nguyên. Đây là nơi linh thiêng của người K\'ho.',
+        imagePath: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=600&fit=crop',
         categoryName: 'Nature',
         latitude: 12.0459,
         longitude: 108.4412,
@@ -46,26 +51,12 @@ const places = [
         location: 'Trại Mát Ward',
         locationVi: 'Phường Trại Mát',
         description: 'A serene lake surrounded by pine forests, perfect for contemplative mornings. The largest lake in Da Lat with stunning natural scenery.',
-        descriptionVi: 'Hồ yên bình bao quanh bởi rừng thông, hoàn hảo cho những buổi sáng chiêm nghiệm.',
-        imagePath: '/images/tuyen-lam-lake.jpg',
+        descriptionVi: 'Hồ nước yên bình được bao quanh bởi rừng thông, hoàn hảo cho những buổi sáng thư thái. Đây là hồ lớn nhất Đà Lạt với cảnh quan thiên nhiên tuyệt đẹp.',
+        imagePath: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&h=600&fit=crop',
         categoryName: 'Lake',
         latitude: 11.9165,
         longitude: 108.4231,
         designerTip: 'Rent a kayak in the early afternoon when the light is softest. The small islands in the middle of the lake offer secluded spots for a peaceful picnic.'
-    },
-    {
-        title: 'The Married Café',
-        titleVi: 'Quán Cà Phê Vợ Chồng',
-        location: 'Phường 4, Dalat',
-        locationVi: 'Phường 4, Đà Lạt',
-        description: 'Where artisanal coffee meets French colonial architecture in a garden setting. A hidden gem known for its unique atmosphere.',
-        descriptionVi: 'Nơi cà phê thủ công gặp gỡ kiến trúc thuộc địa Pháp trong khung cảnh vườn.',
-        imagePath: '/images/married-cafe.jpg',
-        categoryName: 'Café',
-        latitude: 11.9416,
-        longitude: 108.4378,
-        openingHours: '7:00 AM - 10:00 PM',
-        designerTip: 'Ask for the house special weasel coffee. Sit in the garden area during late afternoon for the best lighting.'
     },
     {
         title: 'Valley of Love',
@@ -73,8 +64,8 @@ const places = [
         location: 'Phường 8, Dalat',
         locationVi: 'Phường 8, Đà Lạt',
         description: 'Rolling hills adorned with wildflowers, a timeless romantic escape. One of the most famous tourist attractions in Da Lat.',
-        descriptionVi: 'Những ngọn đồi thoai thoải điểm xuyết hoa dại, nơi trốn thoát lãng mạn vượt thời gian.',
-        imagePath: '/images/valley-of-love.jpg',
+        descriptionVi: 'Những ngọn đồi thoai thoải trải dài, phủ đầy hoa dại, là nơi trốn thoát lãng mạn vượt thời gian. Một trong những điểm du lịch nổi tiếng nhất Đà Lạt.',
+        imagePath: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
         categoryName: 'Park',
         latitude: 11.9521,
         longitude: 108.4289,
@@ -87,8 +78,8 @@ const places = [
         location: 'Prenn Pass',
         locationVi: 'Đèo Prenn',
         description: 'Crystal waters cascading through ancient forest, an adventure in nature. Features an exciting alpine coaster ride.',
-        descriptionVi: 'Dòng nước trong vắt đổ xuống giữa rừng cổ thụ, một cuộc phiêu lưu giữa thiên nhiên.',
-        imagePath: '/images/datanla-waterfall.jpg',
+        descriptionVi: 'Dòng thác trong vắt đổ xuống giữa rừng già, một cuộc phiêu lưu giữa thiên nhiên. Có máng trượt alpine coaster cực kỳ thú vị.',
+        imagePath: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=800&h=600&fit=crop',
         categoryName: 'Waterfall',
         latitude: 11.9089,
         longitude: 108.4567,
@@ -96,30 +87,75 @@ const places = [
         designerTip: 'Take the alpine coaster for an unforgettable experience. Visit during or right after the rainy season for the most impressive water flow.'
     },
     {
-        title: 'Mai Anh Đào Street',
-        titleVi: 'Đường Mai Anh Đào',
-        location: 'Phường 3, Dalat',
-        locationVi: 'Phường 3, Đà Lạt',
-        description: 'Cherry blossom lanes that transform into a pink dreamscape each spring. A photographer\'s paradise during blooming season.',
-        descriptionVi: 'Những con đường hoa anh đào biến thành khung cảnh mơ màng màu hồng mỗi mùa xuân.',
-        imagePath: '/images/mai-anh-dao-street.jpg',
-        categoryName: 'Street',
-        latitude: 11.9398,
-        longitude: 108.4356,
-        designerTip: 'Best visited in late January to early February during cherry blossom season. Early morning offers the best photographs without crowds.'
+        title: 'Elephant Waterfall',
+        titleVi: 'Thác Voi',
+        location: 'Nam Ban, Lâm Hà',
+        locationVi: 'Nam Ban, Lâm Hà',
+        description: 'One of the largest and most majestic waterfalls in Da Lat. The thundering cascade drops over 30 meters into a misty pool below.',
+        descriptionVi: 'Một trong những thác nước hùng vĩ nhất Đà Lạt. Dòng thác ầm ầm đổ xuống hơn 30 mét vào vực nước đầy sương khói.',
+        imagePath: 'https://images.unsplash.com/photo-1475113548554-5a36f1f523d6?w=800&h=600&fit=crop',
+        categoryName: 'Waterfall',
+        latitude: 11.7589,
+        longitude: 108.2983,
+        openingHours: '7:00 AM - 5:00 PM',
+        designerTip: 'Wear sturdy shoes for the slippery trail down. The best photos are taken from the viewing platform on the left side.'
     },
     {
-        title: 'Dalat Palace Heritage Hotel',
-        titleVi: 'Khách Sạn Dalat Palace',
-        location: 'Trần Phú Street',
-        locationVi: 'Đường Trần Phú',
-        description: 'Perfect for misty weather - cozy French colonial architecture. A historic luxury hotel dating back to 1922.',
-        descriptionVi: 'Hoàn hảo cho thời tiết sương mù - kiến trúc thuộc địa Pháp ấm cúng.',
-        imagePath: '/images/dalat-palace.jpg',
-        categoryName: 'Historic Stay',
-        latitude: 11.9363,
-        longitude: 108.4383,
-        phone: '+84 263 3825 444'
+        title: 'Pongour Waterfall',
+        titleVi: 'Thác Pongour',
+        location: 'Đức Trọng District',
+        locationVi: 'Huyện Đức Trọng',
+        description: 'Known as the "most beautiful waterfall in the South", this seven-tiered cascade spreads over 100 meters wide during rainy season.',
+        descriptionVi: 'Được mệnh danh là "thác nước đẹp nhất miền Nam", thác 7 tầng này trải rộng hơn 100 mét vào mùa mưa.',
+        imagePath: 'https://images.unsplash.com/photo-1504870712357-65ea720d6078?w=800&h=600&fit=crop',
+        categoryName: 'Waterfall',
+        latitude: 11.7456,
+        longitude: 108.4123,
+        openingHours: '7:00 AM - 5:00 PM',
+        designerTip: 'Visit between July-November for the most spectacular water volume. Pack a picnic for the scenic grounds.'
+    },
+    {
+        title: 'Xuan Huong Lake',
+        titleVi: 'Hồ Xuân Hương',
+        location: 'City Center',
+        locationVi: 'Trung tâm thành phố',
+        description: 'The heart of Da Lat city, this crescent-shaped lake is perfect for romantic walks and cycling. Misty mornings create magical reflections.',
+        descriptionVi: 'Trái tim của thành phố Đà Lạt, hồ hình lưỡi liềm này hoàn hảo cho những buổi dạo bộ lãng mạn và đạp xe. Sáng sớm sương mù tạo nên những phản chiếu kỳ diệu.',
+        imagePath: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop',
+        categoryName: 'Scenic',
+        latitude: 11.9380,
+        longitude: 108.4372,
+        designerTip: 'Rent a swan boat at sunset for the most romantic experience. The small cafes along the shore offer perfect spots for people watching.'
+    },
+    {
+        title: 'Golden Valley',
+        titleVi: 'Thung Lũng Vàng',
+        location: 'Phường 7, Dalat',
+        locationVi: 'Phường 7, Đà Lạt',
+        description: 'A scenic valley featuring tea plantations, strawberry farms, and beautiful pine forests. Less crowded than Valley of Love.',
+        descriptionVi: 'Thung lũng thơ mộng với những đồi chè, vườn dâu tây và rừng thông đẹp. Ít đông đúc hơn Thung Lũng Tình Yêu.',
+        imagePath: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&h=600&fit=crop',
+        categoryName: 'Nature',
+        latitude: 11.9234,
+        longitude: 108.4567,
+        openingHours: '7:00 AM - 5:00 PM',
+        designerTip: 'Try fresh strawberries from the farms. The zip-line here offers stunning views of the valley.'
+    },
+
+    // ==================== Cafés ====================
+    {
+        title: 'The Married Café',
+        titleVi: 'Quán Cà Phê Vợ Chồng',
+        location: 'Phường 4, Dalat',
+        locationVi: 'Phường 4, Đà Lạt',
+        description: 'Where artisanal coffee meets French colonial architecture in a garden setting. A hidden gem known for its unique atmosphere.',
+        descriptionVi: 'Nơi cà phê thủ công gặp gỡ kiến trúc thuộc địa Pháp trong khung cảnh vườn. Viên ngọc ẩn nổi tiếng với bầu không khí độc đáo.',
+        imagePath: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=600&fit=crop',
+        categoryName: 'Café',
+        latitude: 11.9416,
+        longitude: 108.4378,
+        openingHours: '7:00 AM - 10:00 PM',
+        designerTip: 'Ask for the house special weasel coffee. Sit in the garden area during late afternoon for the best lighting.'
     },
     {
         title: 'Me Linh Coffee Garden',
@@ -127,67 +163,385 @@ const places = [
         location: 'Tà Nung',
         locationVi: 'Tà Nung',
         description: 'Valley views enhanced by morning fog. One of the most scenic coffee gardens in Da Lat with panoramic mountain views.',
-        descriptionVi: 'Tầm nhìn thung lũng được tôn thêm bởi sương mù buổi sáng.',
-        imagePath: '/images/me-linh-coffee.jpg',
+        descriptionVi: 'Tầm nhìn thung lũng được tôn thêm bởi sương mù buổi sáng. Một trong những vườn cà phê có view đẹp nhất Đà Lạt.',
+        imagePath: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&h=600&fit=crop',
         categoryName: 'Café',
         latitude: 11.8833,
         longitude: 108.4756,
-        openingHours: '6:00 AM - 6:00 PM'
+        openingHours: '6:00 AM - 6:00 PM',
+        designerTip: 'Arrive before 7 AM to catch the sunrise over the valley. Try their signature egg coffee with a valley view.'
     },
     {
-        title: 'Xuan Huong Lake',
-        titleVi: 'Hồ Xuân Hương',
-        location: 'City Center',
-        locationVi: 'Trung tâm thành phố',
-        description: 'Misty mornings create magical reflections. The heart of Da Lat city, perfect for romantic walks and cycling.',
-        descriptionVi: 'Những buổi sáng sương mù tạo nên những phản chiếu kỳ diệu.',
-        imagePath: '/images/xuan-huong-lake.jpg',
-        categoryName: 'Scenic',
-        latitude: 11.9380,
-        longitude: 108.4372
+        title: 'An Cafe',
+        titleVi: 'An Cafe',
+        location: 'Nguyễn Chí Thanh, Phường 1',
+        locationVi: 'Nguyễn Chí Thanh, Phường 1',
+        description: 'A cozy 24-hour café perfect for digital nomads and late-night study sessions. Known for its peaceful atmosphere.',
+        descriptionVi: 'Quán cà phê ấm cúng mở 24 giờ, hoàn hảo cho dân freelancer và học bài đêm. Nổi tiếng với không gian yên tĩnh.',
+        imagePath: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=600&fit=crop',
+        categoryName: 'Café',
+        latitude: 11.9421,
+        longitude: 108.4398,
+        openingHours: 'Open 24 hours',
+        phone: '+84 909 888 999',
+        designerTip: 'Best visited late at night when the city is quiet. Their hot chocolate is perfect for cold Da Lat nights.'
     },
+    {
+        title: 'Windmills Coffee',
+        titleVi: 'Cafe Cối Xay Gió',
+        location: '94 Nguyễn Đình Chiểu',
+        locationVi: '94 Nguyễn Đình Chiểu',
+        description: 'Instagram-famous café with a distinctive windmill and vibrant flower gardens. Perfect for photo opportunities.',
+        descriptionVi: 'Quán cà phê nổi tiếng trên Instagram với cối xay gió đặc trưng và vườn hoa rực rỡ. Hoàn hảo để chụp ảnh.',
+        imagePath: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&h=600&fit=crop',
+        categoryName: 'Café',
+        latitude: 11.9478,
+        longitude: 108.4521,
+        openingHours: '7:00 AM - 9:00 PM',
+        designerTip: 'Come early morning to avoid crowds. The lower terrace has the best views of the windmill.'
+    },
+
+    // ==================== Architecture & Historic ====================
     {
         title: 'Crazy House',
         titleVi: 'Ngôi Nhà Điên',
         location: 'Huỳnh Thúc Kháng Street',
         locationVi: 'Đường Huỳnh Thúc Kháng',
-        description: 'Indoor exploration ideal for any weather. A unique architectural masterpiece designed by architect Đặng Việt Nga.',
-        descriptionVi: 'Khám phá trong nhà lý tưởng cho mọi thời tiết.',
-        imagePath: '/images/crazy-house.jpg',
+        description: 'A fantastical architectural masterpiece designed by architect Đặng Việt Nga. Indoor exploration ideal for any weather.',
+        descriptionVi: 'Kiệt tác kiến trúc kỳ ảo do kiến trúc sư Đặng Việt Nga thiết kế. Khám phá trong nhà, lý tưởng cho mọi thời tiết.',
+        imagePath: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&h=600&fit=crop',
         categoryName: 'Architecture',
         latitude: 11.9345,
         longitude: 108.4252,
-        openingHours: '8:30 AM - 7:00 PM'
+        openingHours: '8:30 AM - 7:00 PM',
+        designerTip: 'Book a room overnight for the full experience. The giraffe room has the most unique bed in Vietnam.'
     },
+    {
+        title: 'Dalat Palace Heritage Hotel',
+        titleVi: 'Khách Sạn Dalat Palace',
+        location: 'Trần Phú Street',
+        locationVi: 'Đường Trần Phú',
+        description: 'Perfect for misty weather - cozy French colonial architecture. A historic luxury hotel dating back to 1922.',
+        descriptionVi: 'Hoàn hảo cho thời tiết sương mù - kiến trúc thuộc địa Pháp ấm cúng. Khách sạn sang trọng lịch sử từ năm 1922.',
+        imagePath: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop',
+        categoryName: 'Historic Stay',
+        latitude: 11.9363,
+        longitude: 108.4383,
+        phone: '+84 263 3825 444',
+        designerTip: 'Even if not staying, visit the golf course or Le Rabelais restaurant for authentic French cuisine.'
+    },
+    {
+        title: 'Dalat Railway Station',
+        titleVi: 'Ga Đà Lạt',
+        location: 'Quang Trung Street',
+        locationVi: 'Đường Quang Trung',
+        description: 'The oldest railway station in Indochina with stunning French architecture. Take the vintage train to Trại Mát.',
+        descriptionVi: 'Ga xe lửa cổ nhất Đông Dương với kiến trúc Pháp tuyệt đẹp. Trải nghiệm chuyến tàu vintage đến Trại Mát.',
+        imagePath: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&h=600&fit=crop',
+        categoryName: 'Architecture',
+        latitude: 11.9423,
+        longitude: 108.4567,
+        openingHours: '7:00 AM - 5:00 PM',
+        designerTip: 'Take the 5km train ride to Trại Mát for beautiful countryside views. Trains run every 2 hours.'
+    },
+    {
+        title: 'Domaine de Marie Church',
+        titleVi: 'Nhà Thờ Domaine de Marie',
+        location: 'Ngô Quyền Street',
+        locationVi: 'Đường Ngô Quyền',
+        description: 'A pink-colored church built in 1940s with unique Normandy-style architecture. Houses a convent and beautiful gardens.',
+        descriptionVi: 'Nhà thờ màu hồng xây năm 1940 với kiến trúc kiểu Normandy độc đáo. Bên trong có tu viện và vườn đẹp.',
+        imagePath: 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=800&h=600&fit=crop',
+        categoryName: 'Architecture',
+        latitude: 11.9389,
+        longitude: 108.4234,
+        openingHours: '7:00 AM - 5:00 PM',
+        designerTip: 'Visit during golden hour for stunning photography. The nuns sell handmade fruit preserves at the entrance.'
+    },
+
+    // ==================== Restaurants ====================
+    {
+        title: 'Bánh Căn Cô Hương',
+        titleVi: 'Bánh Căn Cô Hương',
+        location: 'Phan Đình Phùng Street',
+        locationVi: 'Đường Phan Đình Phùng',
+        description: 'Legendary spot for Bánh Căn - miniature rice cakes with quail eggs. A local favorite for over 30 years.',
+        descriptionVi: 'Địa điểm huyền thoại cho món Bánh Căn - bánh gạo mini với trứng cút. Món ưa thích của người dân địa phương hơn 30 năm.',
+        imagePath: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop',
+        categoryName: 'Street Food',
+        latitude: 11.9412,
+        longitude: 108.4356,
+        openingHours: '6:00 AM - 10:00 AM',
+        designerTip: 'Come before 8 AM to avoid long queues. Order extra quail eggs for the authentic experience.'
+    },
+    {
+        title: 'Kem Bơ Thanh Thảo',
+        titleVi: 'Kem Bơ Thanh Thảo',
+        location: 'Near Dalat Market',
+        locationVi: 'Gần Chợ Đà Lạt',
+        description: 'Legendary avocado ice cream shop serving creamy, rich treats since 1985. A must-visit Dalat dessert destination.',
+        descriptionVi: 'Tiệm kem bơ huyền thoại phục vụ món kem béo ngậy từ năm 1985. Điểm đến tráng miệng không thể bỏ qua ở Đà Lạt.',
+        imagePath: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=800&h=600&fit=crop',
+        categoryName: 'Street Food',
+        latitude: 11.9404,
+        longitude: 108.4389,
+        openingHours: '10:00 AM - 10:00 PM',
+        designerTip: 'Try the mixed avocado-durian ice cream for a unique flavor combination only locals know about.'
+    },
+    {
+        title: 'Nem Nướng Bà Hùng',
+        titleVi: 'Nem Nướng Bà Hùng',
+        location: 'Hai Bà Trưng Street',
+        locationVi: 'Đường Hai Bà Trưng',
+        description: 'Famous grilled pork sausage wraps with fresh herbs and rice paper. The perfect street food experience.',
+        descriptionVi: 'Nem nướng cuốn bánh tráng nổi tiếng với rau sống. Trải nghiệm ẩm thực đường phố hoàn hảo.',
+        imagePath: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&h=600&fit=crop',
+        categoryName: 'Street Food',
+        latitude: 11.9378,
+        longitude: 108.4412,
+        openingHours: '2:00 PM - 9:00 PM',
+        designerTip: 'Ask for extra dipping sauce - their house-made sauce is the secret to the dish.'
+    },
+    {
+        title: 'Bún Bò Huế Cô Giang',
+        titleVi: 'Bún Bò Huế Cô Giang',
+        location: 'Nguyễn Văn Trỗi',
+        locationVi: 'Nguyễn Văn Trỗi',
+        description: 'Warming highland comfort food - spicy beef noodle soup that perfectly suits the cool Dalat weather.',
+        descriptionVi: 'Món ăn cao nguyên ấm áp - bún bò cay nồng hoàn hảo cho thời tiết se lạnh Đà Lạt.',
+        imagePath: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=800&h=600&fit=crop',
+        categoryName: 'Restaurant',
+        latitude: 11.9356,
+        longitude: 108.4334,
+        openingHours: '6:00 AM - 2:00 PM',
+        designerTip: 'Add extra lemon grass and chili for the authentic Huế flavor. Pairs well with bánh mì on the side.'
+    },
+    {
+        title: 'Lẩu Bò Hào Phát',
+        titleVi: 'Lẩu Bò Hào Phát',
+        location: 'Nguyễn Văn Trỗi, Phường 2',
+        locationVi: 'Nguyễn Văn Trỗi, Phường 2',
+        description: 'The most famous beef hot pot in Dalat with rich broth and fresh beef. Perfect for cold evening dinners.',
+        descriptionVi: 'Lẩu bò nổi tiếng nhất Đà Lạt với nước dùng đậm đà và thịt bò tươi. Hoàn hảo cho bữa tối lạnh.',
+        imagePath: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&h=600&fit=crop',
+        categoryName: 'Restaurant',
+        latitude: 11.9389,
+        longitude: 108.4412,
+        openingHours: '10:00 AM - 10:00 PM',
+        phone: '+84 263 3825 555',
+        designerTip: 'Order the beef set with all cuts for the full experience. Their mushroom plate is also exceptional.'
+    },
+    {
+        title: 'Memory Restaurant',
+        titleVi: 'Nhà Hàng Memory',
+        location: 'Trần Hưng Đạo Street',
+        locationVi: 'Đường Trần Hưng Đạo',
+        description: 'Upscale Vietnamese fusion restaurant with mountain views. Perfect for a special dinner.',
+        descriptionVi: 'Nhà hàng Việt fusion cao cấp với view núi. Hoàn hảo cho bữa tối đặc biệt.',
+        imagePath: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop',
+        categoryName: 'Restaurant',
+        latitude: 11.9356,
+        longitude: 108.4378,
+        openingHours: '10:00 AM - 10:00 PM',
+        phone: '+84 263 3511 888',
+        designerTip: 'Reserve a table on the terrace for the best views. Their grilled salmon is outstanding.'
+    },
+    {
+        title: 'Ganesh Indian Restaurant',
+        titleVi: 'Nhà Hàng Ấn Độ Ganesh',
+        location: 'Trường Công Định, Phường 3',
+        locationVi: 'Trường Công Định, Phường 3',
+        description: 'Authentic Indian cuisine in the heart of Dalat. Known for fresh naan and flavorful curries.',
+        descriptionVi: 'Ẩm thực Ấn Độ chính thống giữa lòng Đà Lạt. Nổi tiếng với bánh naan tươi và cà ri đậm đà.',
+        imagePath: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&h=600&fit=crop',
+        categoryName: 'Restaurant',
+        latitude: 11.9401,
+        longitude: 108.4378,
+        openingHours: '11:00 AM - 10:00 PM',
+        phone: '+84 263 3520 999',
+        designerTip: 'Try the butter chicken with garlic naan. Their mango lassi is perfect for cooler Dalat weather.'
+    },
+    {
+        title: 'Phở Gà Lâm Viên',
+        titleVi: 'Phở Gà Lâm Viên',
+        location: 'Lâm Viên Square',
+        locationVi: 'Quảng trường Lâm Viên',
+        description: 'Soul-warming chicken pho with highland herbs. A local breakfast staple since 1975.',
+        descriptionVi: 'Phở gà thơm ngon với thảo mộc cao nguyên. Món điểm tâm địa phương từ năm 1975.',
+        imagePath: 'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=800&h=600&fit=crop',
+        categoryName: 'Restaurant',
+        latitude: 11.9445,
+        longitude: 108.4356,
+        openingHours: '6:00 AM - 12:00 PM',
+        designerTip: 'Add extra quẩy (fried dough sticks) for the authentic experience. Their chili sauce is house-made.'
+    },
+    {
+        title: 'Bánh Tráng Nướng Chợ Đêm',
+        titleVi: 'Bánh Tráng Nướng Chợ Đêm',
+        location: 'Night Market Area',
+        locationVi: 'Khu Chợ Đêm',
+        description: 'Vietnamese pizza - crispy rice paper with toppings. The quintessential Dalat night market snack.',
+        descriptionVi: 'Pizza Việt Nam - bánh tráng giòn với đủ loại topping. Món ăn vặt đặc trưng chợ đêm Đà Lạt.',
+        imagePath: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=600&fit=crop',
+        categoryName: 'Street Food',
+        latitude: 11.9431,
+        longitude: 108.4398,
+        openingHours: '5:00 PM - 11:00 PM',
+        designerTip: 'Watch the cook grill it over charcoal for entertainment. Add extra cheese for a modern twist.'
+    },
+    {
+        title: 'Xôi Gà Chợ Đà Lạt',
+        titleVi: 'Xôi Gà Chợ Đà Lạt',
+        location: 'Dalat Central Market',
+        locationVi: 'Chợ Đà Lạt',
+        description: 'Sticky rice with shredded chicken - a hearty morning meal beloved by locals.',
+        descriptionVi: 'Xôi gà - bữa sáng đầy năng lượng được người dân địa phương yêu thích.',
+        imagePath: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&h=600&fit=crop',
+        categoryName: 'Street Food',
+        latitude: 11.9423,
+        longitude: 108.4367,
+        openingHours: '5:00 AM - 10:00 AM',
+        designerTip: 'Ask for extra fried shallots on top. Their chili sauce is legendary among locals.'
+    },
+
+    // ==================== Local Experiences ====================
     {
         title: 'Dalat Night Market',
         titleVi: 'Chợ Đêm Đà Lạt',
         location: 'Nguyen Thi Minh Khai Street',
         locationVi: 'Đường Nguyễn Thị Minh Khai',
-        description: 'Cool evening weather perfect for street food. Experience local cuisine and culture in this vibrant night market.',
-        descriptionVi: 'Thời tiết buổi tối mát mẻ hoàn hảo cho ẩm thực đường phố.',
-        imagePath: '/images/dalat-night-market.jpg',
+        description: 'Cool evening weather perfect for street food exploration. Experience local cuisine and culture in this vibrant night market.',
+        descriptionVi: 'Thời tiết buổi tối mát mẻ hoàn hảo để khám phá ẩm thực đường phố. Trải nghiệm văn hóa và ẩm thực địa phương tại chợ đêm sôi động.',
+        imagePath: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=600&fit=crop',
         categoryName: 'Local Experience',
         latitude: 11.9431,
         longitude: 108.4398,
-        openingHours: '6:00 PM - 11:00 PM'
+        openingHours: '6:00 PM - 11:00 PM',
+        designerTip: 'Start from the north end and work your way down. The fruit stalls have the best local strawberries.'
     },
+    {
+        title: 'Mai Anh Đào Street',
+        titleVi: 'Đường Mai Anh Đào',
+        location: 'Phường 3, Dalat',
+        locationVi: 'Phường 3, Đà Lạt',
+        description: 'Cherry blossom lanes that transform into a pink dreamscape each spring. A photographer\'s paradise during blooming season.',
+        descriptionVi: 'Con đường hoa anh đào biến thành khung cảnh mơ màng màu hồng mỗi mùa xuân. Thiên đường nhiếp ảnh vào mùa hoa nở.',
+        imagePath: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?w=800&h=600&fit=crop',
+        categoryName: 'Street',
+        latitude: 11.9398,
+        longitude: 108.4356,
+        designerTip: 'Best visited in late January to early February during cherry blossom season. Early morning offers the best photographs without crowds.'
+    },
+    {
+        title: 'ZooDoo Dalat',
+        titleVi: 'ZooDoo Đà Lạt',
+        location: 'Xuân Thọ',
+        locationVi: 'Xuân Thọ',
+        description: 'Interactive zoo where visitors can play with adorable animals including alpacas, sheep, and rabbits.',
+        descriptionVi: 'Sở thú tương tác nơi du khách có thể chơi đùa với các loài động vật dễ thương như alpaca, cừu và thỏ.',
+        imagePath: 'https://images.unsplash.com/photo-1474511320723-9a56873571b7?w=800&h=600&fit=crop',
+        categoryName: 'Adventure',
+        latitude: 11.8567,
+        longitude: 108.3987,
+        openingHours: '8:00 AM - 5:00 PM',
+        phone: '+84 263 3789 456',
+        designerTip: 'Buy carrots at the entrance to feed the alpacas. The petting area is best visited in early morning when animals are most active.'
+    },
+    {
+        title: 'Cau Dat Tea Farm',
+        titleVi: 'Nông Trại Trà Cầu Đất',
+        location: 'Xuân Trường',
+        locationVi: 'Xuân Trường',
+        description: 'Beautiful tea plantations with farm tours and a scenic café. Learn about tea production from seed to cup.',
+        descriptionVi: 'Đồi chè tuyệt đẹp với tour tham quan nông trại và quán café view đẹp. Tìm hiểu quy trình sản xuất trà từ hạt đến ly.',
+        imagePath: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&h=600&fit=crop',
+        categoryName: 'Adventure',
+        latitude: 11.8312,
+        longitude: 108.5067,
+        openingHours: '7:00 AM - 5:00 PM',
+        phone: '+84 263 3678 123',
+        designerTip: 'Join the 2PM tour for the most comprehensive experience. Buy their Oolong tea as a souvenir.'
+    },
+
+    // ==================== Temples & Gardens ====================
+    {
+        title: 'Truc Lam Zen Monastery',
+        titleVi: 'Thiền Viện Trúc Lâm',
+        location: 'Near Tuyen Lam Lake',
+        locationVi: 'Gần Hồ Tuyền Lâm',
+        description: 'The largest Zen monastery in Da Lat, nestled by the peaceful Tuyen Lam Lake. Perfect for spiritual contemplation.',
+        descriptionVi: 'Thiền viện Zen lớn nhất Đà Lạt, nằm bên Hồ Tuyền Lâm yên bình. Hoàn hảo để thiền định tâm linh.',
+        imagePath: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop',
+        categoryName: 'Temple',
+        latitude: 11.8823,
+        longitude: 108.4345,
+        openingHours: '5:00 AM - 5:00 PM',
+        designerTip: 'Take the cable car for stunning views. Visit during morning prayer for an authentic spiritual experience.'
+    },
+    {
+        title: 'Dalat Flower Garden',
+        titleVi: 'Vườn Hoa Đà Lạt',
+        location: 'Near Xuan Huong Lake',
+        locationVi: 'Gần Hồ Xuân Hương',
+        description: 'Hundreds of flower species from around the world in a beautifully designed garden. Hosts the annual Dalat Flower Festival.',
+        descriptionVi: 'Hàng trăm loài hoa từ khắp nơi trên thế giới trong khu vườn được thiết kế đẹp mắt. Tổ chức Festival Hoa Đà Lạt hàng năm.',
+        imagePath: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop',
+        categoryName: 'Garden',
+        latitude: 11.9432,
+        longitude: 108.4256,
+        openingHours: '7:30 AM - 5:00 PM',
+        phone: '+84 263 3822 178',
+        designerTip: 'Visit December-January for the Flower Festival. The orchid greenhouse has the most exotic species.'
+    },
+    {
+        title: 'Linh Phuoc Pagoda',
+        titleVi: 'Chùa Linh Phước',
+        location: 'Trại Mát',
+        locationVi: 'Trại Mát',
+        description: 'A stunning pagoda made entirely of broken glass and ceramics. Features a 49-meter dragon sculpture.',
+        descriptionVi: 'Ngôi chùa tuyệt đẹp làm hoàn toàn từ kính và gốm vỡ. Có tượng rồng 49 mét.',
+        imagePath: 'https://images.unsplash.com/photo-1600298881974-6be191ceeda1?w=800&h=600&fit=crop',
+        categoryName: 'Temple',
+        latitude: 11.9134,
+        longitude: 108.4678,
+        openingHours: '6:00 AM - 5:00 PM',
+        designerTip: 'Take the antique train from Dalat Railway Station for a unique arrival. The bell tower offers great photos.'
+    },
+
+    // ==================== Adventure ====================
     {
         title: 'Langbiang Peak Trail',
         titleVi: 'Đường Mòn Đỉnh Langbiang',
         location: 'Lạc Dương District',
         locationVi: 'Huyện Lạc Dương',
         description: 'Clear skies ideal for panoramic views. A challenging but rewarding hiking trail to the summit.',
-        descriptionVi: 'Bầu trời trong xanh lý tưởng cho tầm nhìn toàn cảnh.',
-        imagePath: '/images/langbiang-trail.jpg',
+        descriptionVi: 'Bầu trời trong xanh lý tưởng cho tầm nhìn toàn cảnh. Đường mòn leo núi đầy thử thách nhưng xứng đáng.',
+        imagePath: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=600&fit=crop',
         categoryName: 'Adventure',
         latitude: 12.0500,
-        longitude: 108.4400
+        longitude: 108.4400,
+        openingHours: '6:00 AM - 5:00 PM',
+        designerTip: 'Start at 5 AM to reach the peak for sunrise. Bring at least 2 liters of water and wear hiking boots.'
+    },
+    {
+        title: 'Clay Tunnel',
+        titleVi: 'Đường Hầm Đất Sét',
+        location: 'Phường 4',
+        locationVi: 'Phường 4',
+        description: 'Unique clay artwork sculptures depicting Da Lat history and culture. An indoor attraction perfect for rainy days.',
+        descriptionVi: 'Tác phẩm điêu khắc đất sét độc đáo mô tả lịch sử và văn hóa Đà Lạt. Điểm tham quan trong nhà hoàn hảo cho ngày mưa.',
+        imagePath: 'https://images.unsplash.com/photo-1600298881974-6be191ceeda1?w=800&h=600&fit=crop',
+        categoryName: 'Architecture',
+        latitude: 11.9134,
+        longitude: 108.4678,
+        openingHours: '7:00 AM - 5:30 PM',
+        phone: '+84 263 3567 890',
+        designerTip: 'Join a guided tour to understand the stories behind each sculpture. Photography is allowed but no flash.'
     }
 ];
 
 // =============================================================================
-// Sample Reviews
+// Sample Reviews - More comprehensive
 // =============================================================================
 
 const sampleReviews = [
@@ -225,6 +579,41 @@ const sampleReviews = [
         rating: 4,
         language: 'vi',
         placeTitle: 'Dalat Night Market'
+    },
+    {
+        title: 'Must try Bánh Căn!',
+        content: 'This is the best Bánh Căn I have ever had. Authentic taste, friendly owner, and very affordable!',
+        rating: 5,
+        language: 'en',
+        placeTitle: 'Bánh Căn Cô Hương'
+    },
+    {
+        title: 'Kem bơ ngon tuyệt!',
+        content: 'Kem bơ ở đây quá ngon, vị béo ngậy mà không ngấy. Nhất định phải thử!',
+        rating: 5,
+        language: 'vi',
+        placeTitle: 'Kem Bơ Thanh Thảo'
+    },
+    {
+        title: 'Perfect viewpoint',
+        content: 'Valley of Love offers amazing photo opportunities. Go early to avoid crowds.',
+        rating: 4,
+        language: 'en',
+        placeTitle: 'Valley of Love'
+    },
+    {
+        title: 'Architectural wonder',
+        content: 'Crazy House is unlike anything I have ever seen. Great for photography!',
+        rating: 5,
+        language: 'en',
+        placeTitle: 'Crazy House'
+    },
+    {
+        title: 'Lẩu bò đỉnh cao',
+        content: 'Nước dùng thơm đậm đà, thịt bò tươi ngon. Quán đông nên nhớ đến sớm!',
+        rating: 5,
+        language: 'vi',
+        placeTitle: 'Lẩu Bò Hào Phát'
     }
 ];
 
@@ -269,13 +658,13 @@ async function main() {
     }
     console.log(`✓ Created ${places.length} places`);
 
-    // Create demo user
+    // Create demo user (with generic avatar - null means use default icon)
     const demoUser = await prisma.user.create({
         data: {
             email: 'demo@dalat.vibe',
             username: 'Traveler',
             passwordHash: await bcrypt.hash('password123', 10),
-            avatar: 'https://i.pravatar.cc/150?img=33'
+            avatar: null  // Use generic user icon
         }
     });
     console.log('✓ Created demo user');
@@ -317,11 +706,23 @@ async function main() {
                     reviewCount: reviews.length
                 }
             });
+        } else {
+            // Set default rating for places without reviews
+            await prisma.place.update({
+                where: { id: place.id },
+                data: {
+                    rating: 4.5,
+                    reviewCount: 0
+                }
+            });
         }
     }
     console.log('✓ Updated place ratings');
 
     console.log('🎉 Database seeded successfully!');
+    console.log(`   - ${categories.length} categories`);
+    console.log(`   - ${places.length} places`);
+    console.log(`   - ${sampleReviews.length} reviews`);
 }
 
 main()

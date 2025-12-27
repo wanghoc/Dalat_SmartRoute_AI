@@ -214,11 +214,9 @@ const UserProfile = () => {
                             className="mb-6"
                         >
                             <div className="relative inline-block">
-                                <img
-                                    src={user.avatar}
-                                    alt={user.name}
-                                    className="w-32 h-32 rounded-full object-cover border-4 border-white/20"
-                                />
+                                <div className="w-32 h-32 rounded-full bg-slate-700 flex items-center justify-center border-4 border-white/20">
+                                    <User className="w-16 h-16 text-white/70" strokeWidth={1.5} />
+                                </div>
                                 <div className="absolute inset-0 rounded-full ring-4 ring-white/10 ring-offset-4 ring-offset-slate-950" />
                             </div>
                         </motion.div>
@@ -228,7 +226,7 @@ const UserProfile = () => {
                             variants={fadeInUp}
                             className="font-tenor text-4xl md:text-5xl mb-3"
                         >
-                            {user.name}
+                            {user.name || user.username}
                         </motion.h1>
 
                         {/* Email */}

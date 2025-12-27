@@ -42,56 +42,7 @@ import RegisterModal from './components/RegisterModal';
 // DUMMY DATA - Replace with API calls in production
 // =============================================================================
 
-const recommendedPlaces = [
-    {
-        id: 1,
-        title: "Langbiang Mountain",
-        location: "Lạc Dương District",
-        image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=800&fit=crop&crop=center",
-        description: "A mystical peak wrapped in morning mist, offering panoramic views of the highlands.",
-        category: "Nature"
-    },
-    {
-        id: 2,
-        title: "Hồ Tuyền Lâm",
-        location: "Trại Mát Ward",
-        image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&h=800&fit=crop&crop=center",
-        description: "A serene lake surrounded by pine forests, perfect for contemplative mornings.",
-        category: "Lake"
-    },
-    {
-        id: 3,
-        title: "The Married Café",
-        location: "Phường 4, Dalat",
-        image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=800&fit=crop&crop=center",
-        description: "Where artisanal coffee meets French colonial architecture in a garden setting.",
-        category: "Café"
-    },
-    {
-        id: 4,
-        title: "Valley of Love",
-        location: "Phường 8, Dalat",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=800&fit=crop&crop=center",
-        description: "Rolling hills adorned with wildflowers, a timeless romantic escape.",
-        category: "Nature"
-    },
-    {
-        id: 5,
-        title: "Datanla Waterfall",
-        location: "Prenn Pass",
-        image: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=600&h=800&fit=crop&crop=center",
-        description: "Crystal waters cascading through ancient forest, an adventure in nature.",
-        category: "Waterfall"
-    },
-    {
-        id: 6,
-        title: "Mai Anh Đào Street",
-        location: "Phường 3, Dalat",
-        image: "https://images.unsplash.com/photo-1462275646964-a0e3571f4f5c?w=600&h=800&fit=crop&crop=center",
-        description: "Cherry blossom lanes that transform into a pink dreamscape each spring.",
-        category: "Street"
-    }
-];
+// Dummy data removed - now fetching from API
 
 // TODO: Connect to backend recommendations API
 // const fetchRecommendations = async (userId) => { ... }
@@ -485,15 +436,15 @@ const AvatarDropdownHeader = ({ user, onLogout, scrolled }) => {
         <div ref={dropdownRef} className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-slate-600/50 transition-all duration-300"
+                className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-slate-600/50 transition-all duration-300 bg-slate-700 flex items-center justify-center"
             >
-                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                <User className="w-5 h-5 text-white" strokeWidth={1.5} />
             </button>
 
             {isOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 py-2 bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-xl z-50">
                     <div className="px-4 py-3 border-b border-white/10">
-                        <p className="font-manrope font-medium text-white text-sm">{user.name}</p>
+                        <p className="font-manrope font-medium text-white text-sm">{user.name || user.username}</p>
                         <p className="font-manrope text-xs text-white/50 truncate">{user.email}</p>
                     </div>
                     <div className="py-1">
@@ -734,7 +685,9 @@ const Header = () => {
                                             onClick={() => setMenuOpen(false)}
                                             className="flex items-center gap-3 py-3 px-4 rounded-xl text-foreground/80 hover:bg-gray-50"
                                         >
-                                            <img src={user.avatar} alt={user.name || user.username} className="w-8 h-8 rounded-full" />
+                                            <div className="w-8 h-8 rounded-full bg-slate-300 flex items-center justify-center">
+                                                <User className="w-4 h-4 text-slate-600" />
+                                            </div>
                                             <span className="font-manrope font-medium">{user.name || user.username}</span>
                                         </Link>
                                         <button
@@ -1089,46 +1042,49 @@ const Footer = () => {
 // COMPONENT: LocalEatsSection (Static 3x2 Grid)
 // =============================================================================
 
-const localEatsData = [
-    {
-        id: 101,
-        name: "Bánh Căn Cô Hương",
-        specialty: "Miniature rice cakes with quail eggs",
-        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop"
-    },
-    {
-        id: 102,
-        name: "Kem Bơ Thanh Thảo",
-        specialty: "Legendary avocado ice cream since 1985",
-        image: "https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=400&h=300&fit=crop"
-    },
-    {
-        id: 103,
-        name: "Bánh Ướt Lòng Gà",
-        specialty: "Steamed rice rolls with chicken",
-        image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop"
-    },
-    {
-        id: 104,
-        name: "Nem Nướng Bà Hùng",
-        specialty: "Grilled pork sausage wraps",
-        image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&h=300&fit=crop"
-    },
-    {
-        id: 105,
-        name: "Bún Bò Huế Cô Giang",
-        specialty: "Spicy beef noodle soup",
-        image: "https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=400&h=300&fit=crop"
-    },
-    {
-        id: 106,
-        name: "Bánh Tráng Nướng",
-        specialty: "Vietnamese pizza - crispy rice paper",
-        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop"
-    }
-];
+// localEatsData - Now fetched from API in LocalEatsSection
 
 const LocalEatsSection = () => {
+    const [localEats, setLocalEats] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchLocalEats = async () => {
+            try {
+                // Fetch all places and filter for food-related categories
+                const response = await fetch('/api/places');
+                if (response.ok) {
+                    const data = await response.json();
+                    // Filter for Street Food and Restaurant categories, limit to 6
+                    const foodPlaces = data.filter(place =>
+                        place.category?.name === 'Street Food' ||
+                        place.category?.name === 'Restaurant'
+                    ).slice(0, 6);
+                    setLocalEats(foodPlaces);
+                }
+            } catch (err) {
+                console.error('Failed to fetch local eats:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLocalEats();
+    }, []);
+
+    if (loading) {
+        return (
+            <section className="py-10 md:py-16" aria-label="Local Hidden Gems">
+                <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div key={i} className="aspect-[4/3] rounded-2xl bg-gray-200 animate-pulse" />
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="py-10 md:py-16" aria-label="Local Hidden Gems">
             {/* Section Header with View All Link */}
@@ -1155,17 +1111,18 @@ const LocalEatsSection = () => {
                 </div>
             </div>
 
-            {/* Static 3x2 Grid */}
+            {/* Dynamic Grid - Fetched from API */}
             <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {localEatsData.map((item) => (
-                        <div
+                    {localEats.map((item) => (
+                        <Link
                             key={item.id}
-                            className="group relative rounded-2xl overflow-hidden aspect-[4/3] cursor-pointer"
+                            to={`/place/${item.id}`}
+                            className="group relative rounded-2xl overflow-hidden aspect-[4/3] cursor-pointer block"
                         >
                             <img
-                                src={item.image}
-                                alt={item.name}
+                                src={item.imagePath}
+                                alt={item.title}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                             {/* Gradient Overlay */}
@@ -1173,13 +1130,13 @@ const LocalEatsSection = () => {
                             {/* Content */}
                             <div className="absolute bottom-0 left-0 right-0 p-4">
                                 <h3 className="font-tenor text-lg text-white mb-1">
-                                    {item.name}
+                                    {item.title}
                                 </h3>
                                 <p className="font-manrope text-sm text-white/70">
-                                    {item.specialty}
+                                    {item.description?.substring(0, 60)}...
                                 </p>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
@@ -1192,6 +1149,35 @@ const LocalEatsSection = () => {
 // =============================================================================
 
 const HomePage = () => {
+    const [recommendedPlaces, setRecommendedPlaces] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRecommendedPlaces = async () => {
+            try {
+                const response = await fetch('/api/places');
+                if (response.ok) {
+                    const data = await response.json();
+                    // Transform data to match PlaceCard expected format and take first 6
+                    const transformed = data.slice(0, 6).map(place => ({
+                        id: place.id,
+                        title: place.title,
+                        location: place.location,
+                        image: place.imagePath,
+                        description: place.description,
+                        category: place.category?.name || 'Attraction'
+                    }));
+                    setRecommendedPlaces(transformed);
+                }
+            } catch (err) {
+                console.error('Failed to fetch places:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRecommendedPlaces();
+    }, []);
+
     const handleSearch = (query) => {
         // TODO: Connect to AI search backend
         console.log('Searching for:', query);
@@ -1204,15 +1190,27 @@ const HomePage = () => {
 
                 {/* Section 1: Curated Recommendations (Weather-Based) */}
                 <div className="mt-16 md:mt-20">
-                    <CuratedSection
-                        title="Forecast-Based Curation: Today's Perfect Match"
-                        subtitle="AI Picks"
-                        places={recommendedPlaces}
-                        viewAllLink="/ai-recs"
-                    />
+                    {loading ? (
+                        <section className="py-10 md:py-16">
+                            <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                                <div className="flex gap-4 md:gap-6 overflow-x-auto">
+                                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                                        <div key={i} className="flex-shrink-0 w-[280px] md:w-[320px] aspect-[3/4] rounded-2xl bg-gray-200 animate-pulse" />
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+                    ) : (
+                        <CuratedSection
+                            title="Forecast-Based Curation: Today's Perfect Match"
+                            subtitle="AI Picks"
+                            places={recommendedPlaces}
+                            viewAllLink="/ai-recs"
+                        />
+                    )}
                 </div>
 
-                {/* Section 2: Local Hidden Gems (Static Grid) */}
+                {/* Section 2: Local Hidden Gems (Dynamic from API) */}
                 <LocalEatsSection />
 
                 {/* Interactive Map Section */}
