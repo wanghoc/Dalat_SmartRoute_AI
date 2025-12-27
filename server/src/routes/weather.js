@@ -96,4 +96,34 @@ router.get('/forecast', async (req, res) => {
     }
 });
 
+// =============================================================================
+// GET /api/weather/forecast-detailed - Get Detailed Forecast (raw data for client)
+// =============================================================================
+
+router.get('/forecast-detailed', async (req, res) => {
+    try {
+        const apiKey = process.env.OPENWEATHER_API_KEY;
+
+        if (!apiKey) {
+            return res.status(500).json({ error: 'Weather API not configured' });
+        }
+
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${DALAT_LAT}&lon=${DALAT_LON}&units=metric&lang=en&appid=${apiKey}`
+        );
+
+        if (!response.ok) {
+            throw new Error('Weather API error');
+        }
+
+        const data = await response.json();
+
+        // Return the full forecast data for client-side processing
+        res.json(data);
+    } catch (error) {
+        console.error('Detailed Forecast API error:', error);
+        res.status(500).json({ error: 'Failed to fetch detailed forecast data' });
+    }
+});
+
 export default router;

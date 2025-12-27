@@ -53,6 +53,14 @@ const resources = {
                 vi: 'Tiếng Việt',
                 fr: 'Français',
                 zh: '中文'
+            },
+            chat: {
+                title: 'Dalat AI Guide',
+                greeting: 'Hello! I\'m your Dalat travel assistant. What would you like to explore today? 🌸',
+                placeholder: 'Ask about Dalat...',
+                thinking: 'Thinking...',
+                errorProcess: 'Sorry, I encountered an issue processing your question. Please try again!',
+                errorConnection: 'Unable to connect to server. Please check your connection!'
             }
         }
     },
@@ -78,6 +86,14 @@ const resources = {
                 vi: 'Tiếng Việt',
                 fr: 'Français',
                 zh: '中文'
+            },
+            chat: {
+                title: 'Trợ lý AI Đà Lạt',
+                greeting: 'Xin chào! Tôi là trợ lý du lịch Đà Lạt. Bạn muốn khám phá điều gì hôm nay? 🌸',
+                placeholder: 'Hỏi về Đà Lạt...',
+                thinking: 'Đang suy nghĩ...',
+                errorProcess: 'Xin lỗi, tôi gặp sự cố khi xử lý câu hỏi. Vui lòng thử lại!',
+                errorConnection: 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối!'
             }
         }
     },
@@ -137,11 +153,16 @@ const resources = {
 // i18n Configuration
 // =============================================================================
 
+// Get saved language from localStorage or default to 'vi'
+const savedLang = typeof window !== 'undefined' 
+    ? localStorage.getItem('dalat_lang') || 'vi' 
+    : 'vi';
+
 i18n
     .use(initReactI18next)
     .init({
         resources,
-        lng: 'ko', // Default language: Korean
+        lng: savedLang, // Load saved language
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false // React already escapes

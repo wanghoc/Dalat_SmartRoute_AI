@@ -25,13 +25,7 @@ import {
     Minus
 } from 'lucide-react';
 
-// =============================================================================
-// API Configuration
-// =============================================================================
-
-const API_KEY = 'e4b5202e7eabe536609be876b6bb82cb';
-const DALAT_LAT = 11.94;
-const DALAT_LON = 108.43;
+// API requests are proxied through backend to protect API keys
 
 // =============================================================================
 // Place Recommendations Data
@@ -513,26 +507,22 @@ const Weather = () => {
     useEffect(() => {
         const fetchWeatherData = async () => {
             try {
-                // Fetch current weather
-                const currentResponse = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?lat=${DALAT_LAT}&lon=${DALAT_LON}&units=metric&lang=en&appid=${API_KEY}`
-                );
+                // Fetch current weather via backend proxy
+                const currentResponse = await fetch('/api/weather');
                 if (!currentResponse.ok) throw new Error('Weather data unavailable');
                 const currentData = await currentResponse.json();
 
                 setCurrentWeather({
-                    temp: Math.round(currentData.main.temp),
-                    feelsLike: Math.round(currentData.main.feels_like),
-                    humidity: currentData.main.humidity,
-                    windSpeed: currentData.wind.speed,
-                    description: capitalizeWords(currentData.weather[0].description),
-                    weatherId: currentData.weather[0].id
+                    temp: Math.round(currentData.temp),
+                    feelsLike: currentData.feelsLike ? Math.round(currentData.feelsLike) : Math.round(currentData.temp),
+                    humidity: currentData.humidity,
+                    windSpeed: currentData.windSpeed,
+                    description: capitalizeWords(currentData.description),
+                    weatherId: currentData.weatherId
                 });
 
-                // Fetch 5-day/3-hour forecast
-                const forecastResponse = await fetch(
-                    `https://api.openweathermap.org/data/2.5/forecast?lat=${DALAT_LAT}&lon=${DALAT_LON}&units=metric&lang=en&appid=${API_KEY}`
-                );
+                // Fetch 5-day/3-hour forecast via backend proxy
+                const forecastResponse = await fetch('/api/weather/forecast-detailed');
                 if (!forecastResponse.ok) throw new Error('Forecast unavailable');
                 const forecastData = await forecastResponse.json();
 

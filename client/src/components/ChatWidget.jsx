@@ -1,22 +1,41 @@
 import { useState, useRef, useEffect } from 'react';
 import { Sparkles, X, Send, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // =============================================================================
 // COMPONENT: ChatWidget - Global Floating Chatbot with Gemini AI
 // =============================================================================
 
 const ChatWidget = () => {
+    const { t, i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            type: 'ai',
-            text: "Xin chào! Tôi là trợ lý du lịch Đà Lạt. Bạn muốn khám phá điều gì hôm nay? 🌸"
-        }
-    ]);
+    const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
+    const prevLangRef = useRef(i18n.language);
+
+    // Initialize greeting message based on current language
+    useEffect(() => {
+        setMessages([{
+            id: 1,
+            type: 'ai',
+            text: t('chat.greeting')
+        }]);
+    }, []);
+
+    // Update greeting when language changes
+    useEffect(() => {
+        if (prevLangRef.current !== i18n.language) {
+            // Reset messages with new language greeting
+            setMessages([{
+                id: Date.now(),
+                type: 'ai',
+                text: t('chat.greeting')
+            }]);
+            prevLangRef.current = i18n.language;
+        }
+    }, [i18n.language, t]);
 
     // Auto-scroll to bottom when messages change
     useEffect(() => {
@@ -39,7 +58,7 @@ const ChatWidget = () => {
         setIsLoading(true);
 
         try {
-            // Call the backend chat API
+            // Call the backend chat API with current language
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -47,7 +66,8 @@ const ChatWidget = () => {
                 },
                 body: JSON.stringify({
                     message: userMessage.text,
-                    history: messages.slice(-10) // Send last 10 messages for context
+                    history: messages.slice(-10),
+                    language: i18n.language // Send current language
                 })
             });
 
@@ -65,7 +85,7 @@ const ChatWidget = () => {
                 const errorMessage = {
                     id: Date.now() + 1,
                     type: 'ai',
-                    text: "Xin lỗi, tôi gặp sự cố khi xử lý câu hỏi. Vui lòng thử lại!"
+                    text: t('chat.errorProcess')
                 };
                 setMessages(prev => [...prev, errorMessage]);
             }
@@ -74,7 +94,7 @@ const ChatWidget = () => {
             const errorMessage = {
                 id: Date.now() + 1,
                 type: 'ai',
-                text: "Không thể kết nối đến server. Vui lòng kiểm tra kết nối!"
+                text: t('chat.errorConnection')
             };
             setMessages(prev => [...prev, errorMessage]);
         } finally {
@@ -116,7 +136,7 @@ const ChatWidget = () => {
                 <div className="flex items-center justify-between px-5 py-4 border-b border-foreground/10 bg-gradient-to-r from-blue-600 to-indigo-600">
                     <div className="flex items-center gap-2">
                         <Sparkles className="w-5 h-5 text-white" strokeWidth={1.5} />
-                        <h3 className="font-tenor text-lg text-white">Dalat AI Guide</h3>
+                        <h3 className="font-tenor text-lg text-white">{t('chat.title')}</h3>
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}
@@ -162,7 +182,7 @@ const ChatWidget = () => {
                             <div className="bg-white px-4 py-3 rounded-2xl shadow-sm border border-gray-100 rounded-bl-md">
                                 <div className="flex items-center gap-2">
                                     <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
-                                    <span className="text-sm text-gray-500">Đang suy nghĩ...</span>
+                                    <span className="text-sm text-gray-500">{t('chat.thinking')}</span>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +199,7 @@ const ChatWidget = () => {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={handleKeyPress}
-                            placeholder="Hỏi về Đà Lạt..."
+                            placeholder={t('chat.placeholder')}
                             disabled={isLoading}
                             className="
                                 flex-1 px-4 py-2.5

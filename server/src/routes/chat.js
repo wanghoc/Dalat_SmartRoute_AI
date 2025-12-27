@@ -24,7 +24,7 @@ if (fs.existsSync(dataPath)) {
 // 2. API ROUTE
 router.post('/', async (req, res) => {
     try {
-        const { message } = req.body;
+        const { message, language = 'vi' } = req.body;
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) return res.status(500).json({ error: 'No API Key found' });
@@ -34,16 +34,25 @@ router.post('/', async (req, res) => {
         
         // QUAN TRỌNG: Hãy điền tên model bạn tìm thấy ở Bước 1 vào đây.
         // Theo docs hiện tại là "gemini-1.5-flash"
-        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+
+        // Language-specific instructions
+        const langInstructions = language === 'vi' 
+            ? 'Trả lời ngắn gọn bằng tiếng Việt:'
+            : 'Answer briefly in English:';
+
+        const roleDescription = language === 'vi'
+            ? 'Bạn là hướng dẫn viên du lịch Đà Lạt thân thiện và nhiệt tình.'
+            : 'You are a friendly and enthusiastic Dalat travel guide.';
 
         // Tạo Prompt (Câu lệnh)
         // Kỹ thuật: Nhồi dữ liệu (Context) trực tiếp vào prompt
         const prompt = `
-        Bạn là hướng dẫn viên du lịch Đà Lạt. Hãy trả lời câu hỏi dựa trên dữ liệu sau:
+        ${roleDescription} Hãy trả lời câu hỏi dựa trên dữ liệu sau:
         ${JSON.stringify(localData)}
         
         Câu hỏi: ${message}
-        Trả lời ngắn gọn bằng tiếng Việt:
+        ${langInstructions}
         `;
 
         // Gọi hàm generateContent (đúng chuẩn docs)
