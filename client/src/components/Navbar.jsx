@@ -108,6 +108,18 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (menuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [menuOpen]);
+
     useEffect(() => {
         const onClick = (e) => {
             if (langRef.current && !langRef.current.contains(e.target)) {
@@ -238,75 +250,112 @@ const Navbar = () => {
                         </button>
                     </div>
                 </div>
+            </header>
 
-                {/* ===== MOBILE MENU OVERLAY ===== */}
-                <div className={`
-                    fixed inset-0 bg-slate-950 z-40 lg:hidden flex flex-col pt-20 px-6
-                    transition-all duration-300 ease-in-out
-                    ${menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
-                `}>
-                    <div className="flex flex-col space-y-4 bg-slate-950">
-                        {navLinks.map((link) => (
-                            <NavLink
-                                key={link.to}
-                                to={link.to}
-                                onClick={() => setMenuOpen(false)}
-                                className={({ isActive }) => `
-                                    text-lg font-medium py-3 border-b border-white/10
-                                    ${isActive ? 'text-white' : 'text-white/60'}
-                                `}
-                            >
-                                {link.label}
-                            </NavLink>
-                        ))}
+            {/* ===== MOBILE MENU OVERLAY ===== */}
+            <div className={`
+                fixed inset-0 bg-gradient-to-b from-slate-900 to-slate-950 z-[60] lg:hidden
+                flex flex-col pt-24 pb-8 px-8 overflow-y-auto
+                transition-all duration-300 ease-in-out
+                ${menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
+            `}>
+                {/* Close button */}
+                <button
+                    onClick={() => setMenuOpen(false)}
+                    className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-white transition-colors"
+                    aria-label="Close menu"
+                >
+                    <X className="w-6 h-6" />
+                </button>
 
-                        {/* Mobile Auth & Language */}
-                        <div className="mt-8 space-y-4">
-                            <div className="flex items-center justify-between text-white/80">
-                                <span>Language</span>
-                                <div className="flex gap-2">
-                                    {languages.slice(1, 3).map(lang => ( // Show EN/VI primarily
-                                        <button
-                                            key={lang.code}
-                                            onClick={() => handleLanguageChange(lang.code)}
-                                            className={`px-3 py-1 rounded-full text-sm ${i18n.language === lang.code ? 'bg-white text-black' : 'bg-white/10'}`}
-                                        >
-                                            {lang.code.toUpperCase()}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                {/* Logo */}
+                <Link
+                    to="/"
+                    onClick={() => setMenuOpen(false)}
+                    className="absolute top-4 left-8 font-tenor text-xl text-white"
+                >
+                    Dalat Vibe
+                </Link>
 
-                            {isAuthenticated && user ? (
-                                <div className="space-y-3 pt-4 border-t border-white/10">
-                                    <div className="flex items-center gap-3 text-white">
-                                        <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
-                                            {user.avatar ? <img src={user.avatar} className="w-full h-full rounded-full" /> : <User className="w-5 h-5" />}
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">{user.name}</p>
-                                            <p className="text-xs text-white/50">{user.email}</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => { logout(); setMenuOpen(false); }}
-                                        className="w-full py-3 rounded-xl bg-white/10 text-white flex items-center justify-center gap-2"
-                                    >
-                                        <LogOut className="w-4 h-4" /> Logout
-                                    </button>
-                                </div>
-                            ) : (
+                {/* Navigation Links */}
+                <nav className="flex flex-col space-y-1">
+                    {navLinks.map((link) => (
+                        <NavLink
+                            key={link.to}
+                            to={link.to}
+                            onClick={() => setMenuOpen(false)}
+                            className={({ isActive }) => `
+                                text-lg font-medium py-4 px-4 rounded-xl transition-all
+                                ${isActive 
+                                    ? 'text-white bg-white/10' 
+                                    : 'text-white/70 hover:text-white hover:bg-white/5'}
+                            `}
+                        >
+                            {link.label}
+                        </NavLink>
+                    ))}
+                </nav>
+
+                {/* Divider */}
+                <div className="my-6 border-t border-white/10" />
+
+                {/* Mobile Auth & Language */}
+                <div className="space-y-6">
+                    {/* Language Selector */}
+                    <div className="bg-white/5 rounded-2xl p-4">
+                        <p className="text-sm text-white/50 mb-3">Language</p>
+                        <div className="flex flex-wrap gap-2">
+                            {languages.map(lang => (
                                 <button
-                                    onClick={() => { setLoginModalOpen(true); setMenuOpen(false); }}
-                                    className="w-full py-3 mt-4 rounded-xl bg-white text-slate-900 font-bold"
+                                    key={lang.code}
+                                    onClick={() => handleLanguageChange(lang.code)}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all ${
+                                        i18n.language === lang.code 
+                                            ? 'bg-white text-slate-900 font-semibold' 
+                                            : 'bg-white/10 text-white/80 hover:bg-white/20'
+                                    }`}
                                 >
-                                    Login
+                                    <span>{lang.flag}</span>
+                                    <span>{lang.code.toUpperCase()}</span>
                                 </button>
-                            )}
+                            ))}
                         </div>
                     </div>
+
+                    {/* User Section */}
+                    {isAuthenticated && user ? (
+                        <div className="bg-white/5 rounded-2xl p-4 space-y-4">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden">
+                                    {user.avatar ? (
+                                        <img src={user.avatar} className="w-full h-full object-cover" alt={user.name} />
+                                    ) : (
+                                        <User className="w-6 h-6 text-white" />
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-semibold text-white truncate">{user.name}</p>
+                                    <p className="text-sm text-white/50 truncate">{user.email}</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => { logout(); setMenuOpen(false); }}
+                                className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white flex items-center justify-center gap-2 transition-colors"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={() => { setLoginModalOpen(true); setMenuOpen(false); }}
+                            className="w-full py-4 rounded-2xl bg-white text-slate-900 font-bold text-lg hover:bg-white/90 transition-colors"
+                        >
+                            Login
+                        </button>
+                    )}
                 </div>
-            </header>
+            </div>
 
             <LoginModal
                 isOpen={loginModalOpen}
