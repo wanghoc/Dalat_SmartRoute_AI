@@ -6,11 +6,13 @@ import {
     Frown,
     ChevronLeft,
     ChevronRight,
-    ChevronDown,
     ThumbsUp,
     Globe,
     Star,
-    PenLine
+    PenLine,
+    MessageCircle,
+    Share2,
+    Calendar
 } from 'lucide-react';
 import { reviewsPart1, reviewsPart2 } from '../data/mockReviews';
 import { useAuth } from '../context/AuthContext';
@@ -21,18 +23,10 @@ import WritePostModal from '../components/WritePostModal';
 // Constants
 // =============================================================================
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 12; // Adjusted for grid layout
 const CUSTOM_REVIEWS_KEY = 'dalat_custom_reviews';
 
-// =============================================================================
-// Combine all reviews
-// =============================================================================
-
 const staticReviews = [...reviewsPart1, ...reviewsPart2];
-
-// =============================================================================
-// Filter Types
-// =============================================================================
 
 const FILTERS = {
     ALL: 'all',
@@ -45,32 +39,11 @@ const FILTERS = {
 // Helper Functions
 // =============================================================================
 
-const getSentimentIcon = (rating) => {
-    if (typeof rating === 'string') {
-        if (rating === 'positive') return Smile;
-        if (rating === 'neutral') return Meh;
-        return Frown;
-    }
-    if (rating >= 4) return Smile;
-    if (rating >= 3) return Meh;
-    return Frown;
-};
-
 const getRatingNumber = (rating) => {
     if (typeof rating === 'number') return rating;
     if (rating === 'positive') return 5;
     if (rating === 'neutral') return 3;
     return 2;
-};
-
-const getLanguageLabel = (lang) => {
-    const labels = {
-        ko: '한국어',
-        en: 'English',
-        vi: 'Tiếng Việt',
-        ja: '日本語'
-    };
-    return labels[lang] || lang;
 };
 
 const formatDate = (dateString) => {
@@ -82,175 +55,148 @@ const formatDate = (dateString) => {
     });
 };
 
-const formatIndex = (num) => {
-    return num.toString().padStart(2, '0');
-};
-
 // =============================================================================
-// Animation Variants
+// Components
 // =============================================================================
 
-const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
-};
-
-const rowVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 }
-};
-
-const expandVariants = {
-    collapsed: { height: 0, opacity: 0 },
-    expanded: { height: 'auto', opacity: 1 }
-};
-
-// =============================================================================
-// ReviewRow Component
-// =============================================================================
-
-const ReviewRow = ({ review, displayIndex, isExpanded, onToggle }) => {
-    const SentimentIcon = getSentimentIcon(review.rating);
+const ReviewCard = ({ review }) => {
     const ratingNum = getRatingNumber(review.rating);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const isLongContent = review.content.length > 150;
 
     return (
         <motion.div
             layout
-            variants={rowVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className={`border-b border-white/5 last:border-b-0 ${review.isCustom ? 'bg-slate-800/30' : ''}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-colors duration-300 flex flex-col h-full"
         >
-            {/* Main Row - Clickable */}
-            <button
-                onClick={onToggle}
-                className="w-full px-6 py-4 flex items-center gap-4 text-left hover:bg-white/5 transition-colors"
-            >
-                {/* Display Index */}
-                <span className="font-mono font-bold text-white text-sm w-10 flex-shrink-0">
-                    {formatIndex(displayIndex)}
-                </span>
-
-                {/* Avatar */}
-                {review.avatar || review.authorAvatar ? (
-                    <img
-                        src={review.avatar || review.authorAvatar}
-                        alt={review.author}
-                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                    />
-                ) : (
-                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center flex-shrink-0">
-                        <span className="text-white font-medium">
-                            {review.author?.charAt(0) || '?'}
-                        </span>
-                    </div>
-                )}
-
-                {/* Author & Preview */}
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                        <span className="font-manrope font-medium text-white text-sm">
-                            {review.author}
-                        </span>
-                        {review.isCustom && (
-                            <span className="px-2 py-0.5 rounded-full bg-slate-800/50 text-xs text-slate-200">
-                                New
-                            </span>
-                        )}
-                        <span className="font-manrope text-xs text-white/40">
-                            {formatDate(review.date)}
-                        </span>
-                    </div>
-                    <p className="font-manrope text-sm text-white/60 truncate">
-                        {review.title || review.content}
-                    </p>
-                </div>
-
-                {/* Rating Stars */}
-                <div className="flex items-center gap-0.5 flex-shrink-0">
-                    {[...Array(5)].map((_, i) => (
-                        <Star
-                            key={i}
-                            className={`w-3.5 h-3.5 ${i < ratingNum ? 'text-white fill-white' : 'text-white/20'}`}
-                        />
-                    ))}
-                </div>
-
-                {/* Sentiment Icon */}
-                <SentimentIcon className="w-5 h-5 text-white/60 flex-shrink-0" />
-
-                {/* Expand Arrow */}
-                <ChevronDown
-                    className={`w-4 h-4 text-white/40 transition-transform duration-300 flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
-                />
-            </button>
-
-            {/* Expanded Content */}
-            <AnimatePresence>
-                {isExpanded && (
-                    <motion.div
-                        variants={expandVariants}
-                        initial="collapsed"
-                        animate="expanded"
-                        exit="collapsed"
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="overflow-hidden"
-                    >
-                        <div className="px-6 pb-6 pt-2 pl-28">
-                            {/* Title if exists */}
-                            {review.title && (
-                                <h3 className="font-tenor text-lg text-white mb-2">{review.title}</h3>
-                            )}
-
-                            {/* Full Content */}
-                            <p className="font-manrope text-base text-white/80 leading-relaxed mb-4">
-                                {review.content}
-                            </p>
-
-                            {/* Meta Row */}
-                            <div className="flex items-center gap-6 text-sm">
-                                {/* Language */}
-                                <div className="flex items-center gap-2 text-white/40">
-                                    <Globe className="w-4 h-4" />
-                                    <span className="font-manrope">{getLanguageLabel(review.language)}</span>
-                                </div>
-
-                                {/* Helpful Count */}
-                                {review.helpful !== undefined && (
-                                    <div className="flex items-center gap-2 text-white/40">
-                                        <ThumbsUp className="w-4 h-4" />
-                                        <span className="font-manrope">{review.helpful} found helpful</span>
-                                    </div>
-                                )}
+            <div className="p-5 flex flex-col h-full">
+                {/* Header: Author & Rating */}
+                <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                        {/* Avatar */}
+                        {review.avatar || review.authorAvatar ? (
+                            <img
+                                src={review.avatar || review.authorAvatar}
+                                alt={review.author}
+                                className="w-10 h-10 rounded-full object-cover ring-2 ring-white/10"
+                            />
+                        ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center ring-2 ring-white/10">
+                                <span className="text-white font-medium">
+                                    {review.author?.charAt(0) || '?'}
+                                </span>
                             </div>
+                        )}
 
-                            {/* Tags */}
-                            {review.tags && review.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mt-4">
-                                    {review.tags.map((tag) => (
-                                        <span
-                                            key={tag}
-                                            className="px-3 py-1 rounded-full bg-white/5 text-white/50 text-xs font-manrope"
-                                        >
-                                            #{tag}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
+                        <div>
+                            <h3 className="font-manrope font-semibold text-white text-sm">
+                                {review.author}
+                            </h3>
+                            <div className="flex items-center gap-2 text-xs text-white/40">
+                                <span className="flex items-center gap-1">
+                                    <Globe className="w-3 h-3" />
+                                    {(review.language || 'en').toUpperCase()}
+                                </span>
+                                <span>•</span>
+                                <span className="flex items-center gap-1">
+                                    <Calendar className="w-3 h-3" />
+                                    {formatDate(review.date)}
+                                </span>
+                            </div>
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    </div>
+
+                    {/* Rating Badge */}
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 border border-white/5">
+                        <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+                        <span className="text-sm font-bold text-white">{ratingNum}.0</span>
+                    </div>
+                </div>
+
+                {/* Content Body */}
+                <div className="flex-1">
+                    {review.title && (
+                        <h4 className="font-tenor text-lg text-white mb-2 leading-snug">
+                            {review.title}
+                        </h4>
+                    )}
+
+                    <div className="relative">
+                        <p className={`font-manrope text-sm text-white/80 leading-relaxed ${!isExpanded && isLongContent ? 'line-clamp-3' : ''}`}>
+                            {review.content}
+                        </p>
+                        {isLongContent && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsExpanded(!isExpanded);
+                                }}
+                                className="text-xs text-blue-400 hover:text-blue-300 font-medium mt-1 inline-block"
+                            >
+                                {isExpanded ? 'Show less' : 'Read more'}
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Tags */}
+                    {review.tags && review.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-4">
+                            {review.tags.slice(0, 3).map((tag) => (
+                                <span
+                                    key={tag}
+                                    className="px-2 py-1 rounded-md bg-white/5 text-white/50 text-xs font-manrope border border-white/5"
+                                >
+                                    #{tag}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer Actions */}
+                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-white/40">
+                    <button className="flex items-center gap-1.5 text-xs hover:text-white transition-colors group">
+                        <ThumbsUp className="w-4 h-4 group-hover:text-blue-400 transition-colors" />
+                        <span>{review.helpful || 0}</span>
+                    </button>
+
+                    <button className="flex items-center gap-1.5 text-xs hover:text-white transition-colors">
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Reply</span>
+                    </button>
+
+                    <button className="flex items-center gap-1.5 text-xs hover:text-white transition-colors">
+                        <Share2 className="w-4 h-4" />
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
         </motion.div>
     );
 };
 
-// =============================================================================
-// Pagination Component
-// =============================================================================
+const FilterButton = ({ icon: Icon, label, count, isActive, onClick }) => {
+    return (
+        <button
+            onClick={onClick}
+            className={`
+                flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all border
+                ${isActive
+                    ? 'bg-white text-slate-900 border-white shadow-lg shadow-white/10 font-medium'
+                    : 'bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white'
+                }
+            `}
+        >
+            <Icon className="w-4 h-4" />
+            <span className="font-manrope text-sm">
+                {label} <span className="opacity-50 ml-1 text-xs">({count})</span>
+            </span>
+        </button>
+    );
+};
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -258,37 +204,52 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     if (totalPages <= 1) return null;
 
     return (
-        <div className="flex items-center justify-center gap-2 mt-8">
+        <div className="flex items-center justify-center gap-2 mt-12 mb-8">
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors border border-white/10"
             >
                 <ChevronLeft className="w-5 h-5 text-white" />
             </button>
 
-            <div className="flex items-center gap-1">
-                {pages.map((page) => (
-                    <button
-                        key={page}
-                        onClick={() => onPageChange(page)}
-                        className={`
-                            w-10 h-10 rounded-lg font-manrope text-sm font-medium transition-all
-                            ${currentPage === page
-                                ? 'bg-white text-slate-950'
-                                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
-                            }
-                        `}
-                    >
-                        {page}
-                    </button>
-                ))}
+            <div className="flex items-center gap-2">
+                {pages.map((page) => {
+                    // Logic to show limited pages if too many
+                    if (
+                        page === 1 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                        return (
+                            <button
+                                key={page}
+                                onClick={() => onPageChange(page)}
+                                className={`
+                                    w-10 h-10 rounded-xl font-manrope text-sm font-medium transition-all border
+                                    ${currentPage === page
+                                        ? 'bg-white text-slate-900 border-white shadow-lg shadow-white/20'
+                                        : 'bg-white/5 text-white/60 border-white/10 hover:bg-white/10 hover:text-white'
+                                    }
+                                `}
+                            >
+                                {page}
+                            </button>
+                        );
+                    } else if (
+                        page === currentPage - 2 ||
+                        page === currentPage + 2
+                    ) {
+                        return <span key={page} className="text-white/30 px-1">...</span>;
+                    }
+                    return null;
+                })}
             </div>
 
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors border border-white/10"
             >
                 <ChevronRight className="w-5 h-5 text-white" />
             </button>
@@ -297,43 +258,18 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 // =============================================================================
-// Filter Button Component
-// =============================================================================
-
-const FilterButton = ({ icon: Icon, label, count, isActive, onClick }) => {
-    return (
-        <button
-            onClick={onClick}
-            className={`
-                flex items-center gap-2 px-4 py-2 rounded-lg transition-all
-                ${isActive
-                    ? 'bg-white/10 text-white'
-                    : 'text-slate-500 hover:text-white/70 hover:bg-white/5'
-                }
-            `}
-        >
-            <Icon className="w-5 h-5" />
-            <span className="font-manrope text-sm">
-                {count} {label}
-            </span>
-        </button>
-    );
-};
-
-// =============================================================================
-// Main Community Page Component
+// Main Community Page
 // =============================================================================
 
 const Community = () => {
     const { user, isAuthenticated } = useAuth();
     const [currentPage, setCurrentPage] = useState(1);
-    const [expandedId, setExpandedId] = useState(null);
     const [activeFilter, setActiveFilter] = useState(FILTERS.ALL);
     const [customReviews, setCustomReviews] = useState([]);
     const [loginModalOpen, setLoginModalOpen] = useState(false);
     const [writeModalOpen, setWriteModalOpen] = useState(false);
 
-    // Load custom reviews from localStorage
+    // Load custom reviews
     useEffect(() => {
         try {
             const stored = localStorage.getItem(CUSTOM_REVIEWS_KEY);
@@ -345,19 +281,20 @@ const Community = () => {
         }
     }, []);
 
-    // Merge custom reviews with static reviews (custom reviews first)
+    // Merge reviews
     const allReviews = useMemo(() => {
         return [...customReviews, ...staticReviews];
     }, [customReviews]);
 
-    // Calculate review counts
+    // Counts
     const reviewCounts = useMemo(() => ({
+        all: allReviews.length,
         positive: allReviews.filter(r => getRatingNumber(r.rating) >= 4).length,
         neutral: allReviews.filter(r => getRatingNumber(r.rating) === 3).length,
         critical: allReviews.filter(r => getRatingNumber(r.rating) <= 2).length
     }), [allReviews]);
 
-    // Filter reviews based on active filter
+    // Filter Logic
     const filteredReviews = useMemo(() => {
         switch (activeFilter) {
             case FILTERS.POSITIVE:
@@ -371,50 +308,16 @@ const Community = () => {
         }
     }, [activeFilter, allReviews]);
 
-    // Calculate total pages based on filtered reviews
+    // Pagination Logic
     const totalPages = Math.ceil(filteredReviews.length / ITEMS_PER_PAGE);
-
-    // Calculate current page reviews
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const currentReviews = filteredReviews.slice(startIndex, endIndex);
+    const currentReviews = filteredReviews.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    // Handle page change
     const handlePageChange = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-            setExpandedId(null);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Handle filter change
-    const handleFilterChange = (filter) => {
-        if (activeFilter === filter) {
-            setActiveFilter(FILTERS.ALL);
-        } else {
-            setActiveFilter(filter);
-        }
-        setCurrentPage(1);
-        setExpandedId(null);
-    };
-
-    // Toggle expanded row
-    const handleToggle = (id) => {
-        setExpandedId(expandedId === id ? null : id);
-    };
-
-    // Handle write button click
-    const handleWriteClick = () => {
-        if (!isAuthenticated || !user) {
-            alert('Please login to write a review.');
-            setLoginModalOpen(true);
-            return;
-        }
-        setWriteModalOpen(true);
-    };
-
-    // Handle new review submission
     const handleNewReview = (newReview) => {
         const updatedReviews = [newReview, ...customReviews];
         setCustomReviews(updatedReviews);
@@ -423,107 +326,108 @@ const Community = () => {
         setActiveFilter(FILTERS.ALL);
     };
 
-    // Calculate display index (descending)
-    const getDisplayIndex = (arrayIndex) => {
-        return filteredReviews.length - ((currentPage - 1) * ITEMS_PER_PAGE + arrayIndex);
+    const handleWriteClick = () => {
+        if (!isAuthenticated || !user) {
+            setLoginModalOpen(true);
+            return;
+        }
+        setWriteModalOpen(true);
     };
 
     return (
         <>
-            <article className="min-h-screen bg-slate-950 text-white pt-28 pb-16">
-                {/* Container matching global header width */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <article className="min-h-screen bg-slate-950 text-white pt-20 pb-16">
 
-                    {/* Header with Write Button */}
-                    <header className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-                        <div>
-                            <p className="font-manrope text-xs font-light text-white/40 uppercase tracking-[0.3em] mb-4">
-                                Traveler Stories
-                            </p>
-                            <h1 className="font-tenor text-4xl md:text-5xl leading-tight">
-                                Community Reviews
-                            </h1>
-                        </div>
+                {/* Hero / Header Section */}
+                <div className="relative bg-[#0B1026] border-b border-white/5 pb-12 pt-12">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                                    <MessageCircle className="w-3 h-3" />
+                                    Community Feed
+                                </div>
+                                <h1 className="font-tenor text-4xl md:text-5xl leading-tight mb-4">
+                                    Traveler Stories
+                                </h1>
+                                <p className="font-manrope text-white/60 max-w-xl text-lg">
+                                    Discover hidden gems, honest reviews, and unforgettable moments shared by the Dalat Vibe community.
+                                </p>
+                            </div>
 
-                        {/* Write Review Button */}
-                        <button
-                            onClick={handleWriteClick}
-                            className="
-                                inline-flex items-center gap-2
-                                px-6 py-3 rounded-xl
-                                bg-slate-800 hover:bg-slate-700
-                                text-white font-medium
-                                transition-all active:scale-95
-                                shadow-lg shadow-slate-900/30
-                            "
-                        >
-                            <PenLine className="w-5 h-5" />
-                            Write a Review
-                        </button>
-                    </header>
-
-                    {/* Interactive Filter Bar */}
-                    <div className="flex flex-wrap items-center gap-4 mb-8 pb-6 border-b border-white/10">
-                        <FilterButton
-                            icon={Smile}
-                            label="Positive"
-                            count={reviewCounts.positive}
-                            isActive={activeFilter === FILTERS.POSITIVE}
-                            onClick={() => handleFilterChange(FILTERS.POSITIVE)}
-                        />
-                        <FilterButton
-                            icon={Meh}
-                            label="Neutral"
-                            count={reviewCounts.neutral}
-                            isActive={activeFilter === FILTERS.NEUTRAL}
-                            onClick={() => handleFilterChange(FILTERS.NEUTRAL)}
-                        />
-                        <FilterButton
-                            icon={Frown}
-                            label="Critical"
-                            count={reviewCounts.critical}
-                            isActive={activeFilter === FILTERS.CRITICAL}
-                            onClick={() => handleFilterChange(FILTERS.CRITICAL)}
-                        />
-
-                        {activeFilter !== FILTERS.ALL && (
                             <button
-                                onClick={() => handleFilterChange(activeFilter)}
-                                className="ml-auto font-manrope text-xs text-white/40 hover:text-white/70 transition-colors"
+                                onClick={handleWriteClick}
+                                className="
+                                    group inline-flex items-center gap-3
+                                    px-6 py-4 rounded-2xl
+                                    bg-white text-slate-950 font-bold
+                                    shadow-xl shadow-white/5
+                                    hover:shadow-white/10 hover:scale-[1.02]
+                                    transition-all duration-300
+                                "
                             >
-                                Clear filter ✕
+                                <PenLine className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                                <span>Write a Review</span>
                             </button>
-                        )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+                    {/* Filter Bar */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <FilterButton
+                                icon={Globe}
+                                label="All Reviews"
+                                count={reviewCounts.all}
+                                isActive={activeFilter === FILTERS.ALL}
+                                onClick={() => setActiveFilter(FILTERS.ALL)}
+                            />
+                            <div className="w-px h-6 bg-white/10 hidden sm:block mx-1" />
+                            <FilterButton
+                                icon={Smile}
+                                label="Positive"
+                                count={reviewCounts.positive}
+                                isActive={activeFilter === FILTERS.POSITIVE}
+                                onClick={() => setActiveFilter(FILTERS.POSITIVE)}
+                            />
+                            <FilterButton
+                                icon={Meh}
+                                label="Neutral"
+                                count={reviewCounts.neutral}
+                                isActive={activeFilter === FILTERS.NEUTRAL}
+                                onClick={() => setActiveFilter(FILTERS.NEUTRAL)}
+                            />
+                            <FilterButton
+                                icon={Frown}
+                                label="Critical"
+                                count={reviewCounts.critical}
+                                isActive={activeFilter === FILTERS.CRITICAL}
+                                onClick={() => setActiveFilter(FILTERS.CRITICAL)}
+                            />
+                        </div>
                     </div>
 
-                    {/* Review List */}
+                    {/* Grid Layout */}
                     <motion.div
-                        key={`${currentPage}-${activeFilter}-${customReviews.length}`}
-                        variants={pageVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={{ duration: 0.3 }}
-                        className="bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden"
+                        layout
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                     >
-                        {currentReviews.length > 0 ? (
-                            <AnimatePresence mode="wait">
-                                {currentReviews.map((review, index) => (
-                                    <ReviewRow
-                                        key={review.id}
-                                        review={review}
-                                        displayIndex={getDisplayIndex(index)}
-                                        isExpanded={expandedId === review.id}
-                                        onToggle={() => handleToggle(review.id)}
-                                    />
-                                ))}
-                            </AnimatePresence>
-                        ) : (
-                            <div className="py-16 text-center">
-                                <p className="font-manrope text-white/40">No reviews match this filter.</p>
-                            </div>
-                        )}
+                        <AnimatePresence mode="popLayout">
+                            {currentReviews.map((review) => (
+                                <ReviewCard key={review.id} review={review} />
+                            ))}
+                        </AnimatePresence>
                     </motion.div>
+
+                    {currentReviews.length === 0 && (
+                        <div className="py-20 text-center bg-white/5 rounded-3xl border border-white/5">
+                            <MessageCircle className="w-12 h-12 text-white/20 mx-auto mb-4" />
+                            <h3 className="font-tenor text-xl text-white mb-2">No reviews found</h3>
+                            <p className="font-manrope text-white/40">Try adjusting your filters to see more stories.</p>
+                        </div>
+                    )}
 
                     {/* Pagination */}
                     <Pagination
