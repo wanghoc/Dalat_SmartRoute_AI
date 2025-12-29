@@ -22,16 +22,24 @@ npm start
 ## Contributing
 Pull requests welcome!
 
-# Cài đặt server dependencies
-cd D:\Dalat_SmartRoute_AI\server
-npm install
+## Run the project
+# Run client
+cd client
+npm install (1st time)
+npm run dev
 
-# Cài đặt client dependencies  
-cd D:\Dalat_SmartRoute_AI\client
-npm install
-
-# Thiết lập Database 
-cd D:\Dalat_SmartRoute_AI\server
+# Run Prisma
+cd server
 npx prisma generate
 npx prisma db push
-npm run db:seed  # (nếu muốn thêm dữ liệu mẫu)
+npm run db:seed
+(1st time)
+npx prisma studios
+
+# Run server
+cd server
+npm install (1st time)
+npm run dev
+
+# Test raining Weather
+http://localhost:3001/api/places/weather-recommendations?weatherId=500&limit=6

@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 
 import ChatWidget from './components/ChatWidget';
+import SearchBar from './components/SearchBar';
 import DetailPage from './pages/Detail';
 import Weather from './pages/Weather';
 import { useAuth } from './context/AuthContext';
@@ -277,10 +278,10 @@ const WeatherColumn = () => {
 };
 
 // =============================================================================
-// COMPONENT: SearchBar (Hybrid Trigger)
+// COMPONENT: HeroSearchBar (Hybrid Trigger - Used in Hero Section)
 // =============================================================================
 
-const SearchBar = ({ onSearch }) => {
+const HeroSearchBar = ({ onSearch }) => {
     const [query, setQuery] = useState('');
     const [isFocused, setIsFocused] = useState(false);
 
@@ -603,6 +604,11 @@ const Header = () => {
 
                     {/* Auth Controls */}
                     <div className="flex items-center gap-3">
+                        {/* Smart Search Bar (left of language toggle) */}
+                        <div className="hidden md:block">
+                            <SearchBar scrolled={scrolled} />
+                        </div>
+
                         {/* Language Toggle Button (Vi/En) */}
                         <button
                             onClick={toggleLanguage}
