@@ -60,6 +60,7 @@ model Place {
   phone         String?
   latitude      Float?
   longitude     Float?
+  indoorSuitable Boolean  @default(false) // For weather-based recommendations
   designerTip   String?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt

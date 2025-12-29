@@ -118,51 +118,83 @@ const PlaceCard = ({ place, isVietnamese }) => {
 
 const AIRecommendations = () => {
     const { t, i18n } = useTranslation();
-    const [currentWeather] = useState('misty');
+    const [weatherCondition, setWeatherCondition] = useState('misty');
+    const [weatherDescription, setWeatherDescription] = useState('');
     const [places, setPlaces] = useState([]);
     const [loading, setLoading] = useState(true);
     const [temperature, setTemperature] = useState(18);
+    const [weatherId, setWeatherId] = useState(741); // Default misty
 
     const isVietnamese = i18n.language === 'vi';
-    const WeatherIcon = getWeatherIcon(currentWeather);
 
-    // Fetch places from API
+    // Determine weather condition type from weatherId
+    const getWeatherConditionType = (id) => {
+        if (id >= 200 && id < 300) return 'rainy'; // Thunderstorm
+        if (id >= 300 && id < 600) return 'rainy'; // Drizzle/Rain
+        if (id >= 600 && id < 700) return 'cloudy'; // Snow
+        if (id >= 700 && id < 800) return 'misty'; // Fog/Mist
+        if (id === 800) return 'sunny'; // Clear
+        return 'cloudy'; // Partly cloudy
+    };
+
+    const WeatherIcon = getWeatherIcon(weatherCondition);
+
+    // Fetch weather from backend API first, then fetch appropriate places
     useEffect(() => {
-        const fetchPlaces = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`${API_BASE}/places?limit=12`);
-                const data = await response.json();
-                setPlaces(data);
+
+                // Fetch weather from backend proxy
+                const weatherResponse = await fetch(`${API_BASE}/weather`);
+                if (weatherResponse.ok) {
+                    const weatherData = await weatherResponse.json();
+                    setTemperature(Math.round(weatherData.temp));
+                    setWeatherId(weatherData.weatherId);
+                    setWeatherDescription(weatherData.description);
+
+                    const conditionType = getWeatherConditionType(weatherData.weatherId);
+                    setWeatherCondition(conditionType);
+
+                    // Fetch weather-based recommendations
+                    const placesResponse = await fetch(`${API_BASE}/places/weather-recommendations?weatherId=${weatherData.weatherId}&limit=12`);
+                    if (placesResponse.ok) {
+                        const placesData = await placesResponse.json();
+                        setPlaces(placesData.places || []);
+                    } else {
+                        // Fallback to all places
+                        const fallbackResponse = await fetch(`${API_BASE}/places?limit=12`);
+                        const fallbackData = await fallbackResponse.json();
+                        setPlaces(fallbackData);
+                    }
+                } else {
+                    // Fallback: fetch all places without weather filtering
+                    const fallbackResponse = await fetch(`${API_BASE}/places?limit=12`);
+                    const fallbackData = await fallbackResponse.json();
+                    setPlaces(fallbackData);
+                }
             } catch (error) {
-                console.error('Failed to fetch places:', error);
+                console.error('Failed to fetch data:', error);
+                // Try to at least get places
+                try {
+                    const fallbackResponse = await fetch(`${API_BASE}/places?limit=12`);
+                    const fallbackData = await fallbackResponse.json();
+                    setPlaces(fallbackData);
+                } catch (e) {
+                    console.error('Fallback also failed:', e);
+                }
             } finally {
                 setLoading(false);
             }
         };
 
-        // Also fetch current weather
-        const fetchWeather = async () => {
-            try {
-                const response = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?lat=11.9404&lon=108.4583&units=metric&appid=bd5e378503939ddaee76f12ad7a97608`
-                );
-                const data = await response.json();
-                if (data.main) {
-                    setTemperature(Math.round(data.main.temp));
-                }
-            } catch (error) {
-                console.error('Weather fetch failed:', error);
-            }
-        };
-
-        fetchPlaces();
-        fetchWeather();
+        fetchData();
     }, []);
 
-    const weatherText = isVietnamese
-        ? `Sương mù và Mát mẻ · ${temperature}°C`
-        : `Misty and Cool · ${temperature}°C`;
+    // Build weather text from actual description
+    const weatherText = weatherDescription
+        ? `${weatherDescription.charAt(0).toUpperCase() + weatherDescription.slice(1)} · ${temperature}°C`
+        : (isVietnamese ? `Thời tiết Đà Lạt · ${temperature}°C` : `Dalat Weather · ${temperature}°C`);
 
     return (
         <article className="min-h-screen bg-slate-950 text-white">

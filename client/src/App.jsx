@@ -125,9 +125,31 @@ const capitalizeWords = (str) => {
 // =============================================================================
 
 const WeatherColumn = () => {
+    const { t, i18n } = useTranslation();
     const [weather, setWeather] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Get weather tip based on weather ID and language
+    const getWeatherTipTranslated = (weatherId) => {
+        const isVi = i18n.language === 'vi';
+        if (weatherId >= 200 && weatherId < 300) {
+            return isVi ? "Có giông bão. Nên ở trong nhà nếu có thể." : "Thunderstorms expected. Stay indoors if possible.";
+        } else if (weatherId >= 300 && weatherId < 400) {
+            return isVi ? "Mưa phùn nhẹ. Một áo khoác nhẹ là đủ." : "Light drizzle. A light jacket should suffice.";
+        } else if (weatherId >= 500 && weatherId < 600) {
+            return isVi ? "Đừng quên mang ô." : "Don't forget your umbrella.";
+        } else if (weatherId >= 600 && weatherId < 700) {
+            return isVi ? "Tuyết hiếm ở Đà Lạt! Mặc thật ấm." : "Rare snow in Dalat! Bundle up warmly.";
+        } else if (weatherId >= 700 && weatherId < 800) {
+            return isVi ? "Sương mù. Lái xe cẩn thận." : "Misty conditions. Drive carefully.";
+        } else if (weatherId === 800) {
+            return isVi ? "Ngày đẹp để đi dạo hoặc khám phá." : "Great day for a walk or outdoor exploration.";
+        } else if (weatherId > 800) {
+            return isVi ? "Trời nhiều mây. Hoàn hảo để tham quan." : "Partly cloudy. Perfect for sightseeing.";
+        }
+        return isVi ? "Chúc bạn có chuyến thăm Đà Lạt vui vẻ!" : "Enjoy your visit to Dalat!";
+    };
 
     useEffect(() => {
         const fetchWeather = async () => {
@@ -171,7 +193,7 @@ const WeatherColumn = () => {
                 <CloudSun className="w-16 h-16 text-white/50" strokeWidth={1} />
                 <p className="font-tenor text-5xl text-white/50">--°C</p>
                 <p className="font-manrope text-sm text-white/50 uppercase tracking-widest">
-                    Unavailable
+                    {t('weather.unavailable')}
                 </p>
             </div>
         );
@@ -232,13 +254,13 @@ const WeatherColumn = () => {
                 <div className="flex items-center gap-2">
                     <Droplets className="w-4 h-4" strokeWidth={1.5} />
                     <span className="font-manrope text-sm">
-                        {weather.humidity}% Humidity
+                        {weather.humidity}% {t('weather.humidity')}
                     </span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Wind className="w-4 h-4" strokeWidth={1.5} />
                     <span className="font-manrope text-sm">
-                        {weather.windSpeed} m/s Wind
+                        {weather.windSpeed} m/s {t('weather.wind')}
                     </span>
                 </div>
             </div>
@@ -248,7 +270,7 @@ const WeatherColumn = () => {
                 font-manrope text-xs text-white/60 italic
                 mt-6 max-w-[200px]
             ">
-                {getWeatherTip(weather.weatherId)}
+                {getWeatherTipTranslated(weather.weatherId)}
             </p>
         </div>
     );
@@ -323,8 +345,14 @@ const SearchBar = ({ onSearch }) => {
 // =============================================================================
 
 const PlaceCard = ({ place }) => {
+    const { i18n } = useTranslation();
     const [isLiked, setIsLiked] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const isVietnamese = i18n.language === 'vi';
+
+    // Get translated title and location
+    const title = isVietnamese && place.titleVi ? place.titleVi : place.title;
+    const location = isVietnamese && place.locationVi ? place.locationVi : place.location;
 
     return (
         <Link
@@ -344,8 +372,8 @@ const PlaceCard = ({ place }) => {
                 )}
 
                 <img
-                    src={place.image}
-                    alt={place.title}
+                    src={place.image || place.imagePath}
+                    alt={title}
                     loading="lazy"
                     onLoad={() => setImageLoaded(true)}
                     className={`
@@ -370,7 +398,7 @@ const PlaceCard = ({ place }) => {
                     bg-white/80 backdrop-blur-sm
                     text-xs font-manrope font-medium text-foreground/80
                 ">
-                    {place.category}
+                    {place.category?.name || place.category}
                 </div>
 
                 {/* Like Button */}
@@ -400,12 +428,12 @@ const PlaceCard = ({ place }) => {
                 {/* Content Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-5">
                     <h3 className="font-tenor text-lg text-white mb-1 leading-tight">
-                        {place.title}
+                        {title}
                     </h3>
                     <div className="flex items-center gap-1.5 text-white/80">
                         <MapPin className="w-3.5 h-3.5" strokeWidth={1.5} />
                         <span className="text-xs font-manrope font-light">
-                            {place.location}
+                            {location}
                         </span>
                     </div>
                 </div>
@@ -474,7 +502,7 @@ const Header = () => {
     const [loginModalOpen, setLoginModalOpen] = useState(false);
     const [registerModalOpen, setRegisterModalOpen] = useState(false);
     const { user, isAuthenticated, logout } = useAuth();
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     // Language state (Vi/En toggle)
     const [language, setLanguage] = useState(i18n.language === 'vi' ? 'vi' : 'en');
@@ -494,12 +522,12 @@ const Header = () => {
     }, []);
 
     const navLinks = [
-        { label: "Home", to: "/" },
-        { label: "Weather", to: "/weather" },
-        { label: "Dalat", to: "/intro" },
-        { label: "Curation", to: "/ai-recs" },
-        { label: "Dining", to: "/local-eats" },
-        { label: "Community", to: "/community" },
+        { label: t('nav.home'), to: "/" },
+        { label: t('nav.weather'), to: "/weather" },
+        { label: t('nav.intro'), to: "/intro" },
+        { label: t('nav.recs'), to: "/ai-recs" },
+        { label: t('nav.local'), to: "/local-eats" },
+        { label: t('nav.community'), to: "/community" },
     ];
 
     return (
@@ -739,6 +767,8 @@ const Header = () => {
 // =============================================================================
 
 const HeroSection = () => {
+    const { t } = useTranslation();
+
     return (
         <section
             className="relative w-full"
@@ -747,8 +777,8 @@ const HeroSection = () => {
             {/* Full-Width Background Image */}
             <div className="relative w-full h-[85vh] md:h-[90vh] lg:h-[95vh] min-h-[600px]">
                 <img
-                    src="https://images.unsplash.com/photo-1600298881974-6be191ceeda1?w=1920&h=1080&fit=crop&crop=center"
-                    alt="Misty mountains and pine forests of Dalat, Vietnam"
+                    src="https://antimatter.vn/wp-content/uploads/2022/06/hinh-anh-da-lat.jpg"
+                    alt="Dalat, Vietnam"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
 
@@ -781,7 +811,7 @@ const HeroSection = () => {
                                     "
                                     style={{ animationDelay: '0.1s' }}
                                 >
-                                    {`Discover the\nMisty Highlands`}
+                                    {t('hero.title')}
                                 </h1>
 
                                 <p
@@ -794,7 +824,7 @@ const HeroSection = () => {
                                     "
                                     style={{ animationDelay: '0.2s' }}
                                 >
-                                    Where French colonial charm meets Vietnamese soul.
+                                    {t('hero.subtitle')}
                                 </p>
                             </div>
 
@@ -824,6 +854,8 @@ const HeroSection = () => {
 // =============================================================================
 
 const CuratedSection = ({ title, subtitle, places, viewAllLink }) => {
+    const { t } = useTranslation();
+
     return (
         <section
             className="py-10 md:py-16"
@@ -849,7 +881,7 @@ const CuratedSection = ({ title, subtitle, places, viewAllLink }) => {
                             to={viewAllLink}
                             className="font-manrope text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
                         >
-                            View All Recommendations
+                            {t('sections.viewAllRecs')}
                             <ChevronRight className="w-4 h-4" />
                         </Link>
                     )}
@@ -878,6 +910,8 @@ const CuratedSection = ({ title, subtitle, places, viewAllLink }) => {
 // =============================================================================
 
 const MapSection = () => {
+    const { t } = useTranslation();
+
     return (
         <section
             className="py-10 md:py-16"
@@ -890,14 +924,14 @@ const MapSection = () => {
                     <div className="flex items-center gap-2 mb-1">
                         <Map className="w-4 h-4 text-accent" strokeWidth={1.5} />
                         <span className="text-xs font-manrope font-medium text-accent uppercase tracking-wider">
-                            Location
+                            {t('sections.location')}
                         </span>
                     </div>
                     <h2 className="font-tenor text-2xl md:text-3xl text-foreground">
-                        Explore Dalat City
+                        {t('sections.exploreCity')}
                     </h2>
                     <p className="font-manrope text-sm text-foreground/60 mt-2">
-                        Interactive Map of Key Locations & Attractions
+                        {t('sections.mapDescription')}
                     </p>
                 </div>
 
@@ -1045,8 +1079,10 @@ const Footer = () => {
 // localEatsData - Now fetched from API in LocalEatsSection
 
 const LocalEatsSection = () => {
+    const { t, i18n } = useTranslation();
     const [localEats, setLocalEats] = useState([]);
     const [loading, setLoading] = useState(true);
+    const isVietnamese = i18n.language === 'vi';
 
     useEffect(() => {
         const fetchLocalEats = async () => {
@@ -1094,18 +1130,18 @@ const LocalEatsSection = () => {
                         <div className="flex items-center gap-2 mb-1">
                             <Heart className="w-4 h-4 text-accent" strokeWidth={1.5} />
                             <span className="text-xs font-manrope font-medium text-accent uppercase tracking-wider">
-                                Local Favorites
+                                {t('sections.localFavorites')}
                             </span>
                         </div>
                         <h2 className="font-tenor text-2xl md:text-3xl text-foreground">
-                            The Dalat Palate: Hidden Local Gems
+                            {t('sections.localGemsTitle')}
                         </h2>
                     </div>
                     <Link
                         to="/local-eats"
                         className="font-manrope text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
                     >
-                        Discover Local Eats
+                        {t('sections.discoverLocalEats')}
                         <ChevronRight className="w-4 h-4" />
                     </Link>
                 </div>
@@ -1122,7 +1158,7 @@ const LocalEatsSection = () => {
                         >
                             <img
                                 src={item.imagePath}
-                                alt={item.title}
+                                alt={isVietnamese && item.titleVi ? item.titleVi : item.title}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                             {/* Gradient Overlay */}
@@ -1130,10 +1166,10 @@ const LocalEatsSection = () => {
                             {/* Content */}
                             <div className="absolute bottom-0 left-0 right-0 p-4">
                                 <h3 className="font-tenor text-lg text-white mb-1">
-                                    {item.title}
+                                    {isVietnamese && item.titleVi ? item.titleVi : item.title}
                                 </h3>
                                 <p className="font-manrope text-sm text-white/70">
-                                    {item.description?.substring(0, 60)}...
+                                    {(isVietnamese && item.descriptionVi ? item.descriptionVi : item.description)?.substring(0, 60)}...
                                 </p>
                             </div>
                         </Link>
@@ -1149,6 +1185,7 @@ const LocalEatsSection = () => {
 // =============================================================================
 
 const HomePage = () => {
+    const { t } = useTranslation();
     const [recommendedPlaces, setRecommendedPlaces] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -1162,7 +1199,9 @@ const HomePage = () => {
                     const transformed = data.slice(0, 6).map(place => ({
                         id: place.id,
                         title: place.title,
+                        titleVi: place.titleVi,
                         location: place.location,
+                        locationVi: place.locationVi,
                         image: place.imagePath,
                         description: place.description,
                         category: place.category?.name || 'Attraction'
@@ -1202,8 +1241,8 @@ const HomePage = () => {
                         </section>
                     ) : (
                         <CuratedSection
-                            title="Forecast-Based Curation: Today's Perfect Match"
-                            subtitle="AI Picks"
+                            title={t('sections.forecastCuration')}
+                            subtitle={t('sections.aiPicks')}
                             places={recommendedPlaces}
                             viewAllLink="/ai-recs"
                         />

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 // =============================================================================
 // Animation Variants
@@ -43,6 +44,8 @@ const slideInLeft = {
 // =============================================================================
 
 const CityIntro = () => {
+    const { t } = useTranslation();
+
     return (
         <article className="bg-slate-950 text-white min-h-screen">
 
@@ -73,7 +76,7 @@ const CityIntro = () => {
                                 variants={fadeIn}
                                 className="font-manrope text-sm font-light text-white/50 uppercase tracking-[0.4em] mb-6"
                             >
-                                Vietnam · Central Highlands
+                                {t('cityIntro.location')}
                             </motion.p>
                             <motion.h1
                                 variants={fadeInUp}
@@ -85,7 +88,7 @@ const CityIntro = () => {
                                 variants={fadeInUp}
                                 className="font-manrope font-light text-xl md:text-2xl text-slate-300 leading-loose max-w-2xl"
                             >
-                                A sanctuary of cool mists, ancient pine forests, and timeless French elegance.
+                                {t('cityIntro.heroSubtitle')}
                             </motion.p>
                         </motion.div>
                     </div>
@@ -108,7 +111,7 @@ const CityIntro = () => {
                             className="lg:col-span-4 lg:sticky lg:top-32 lg:self-start"
                         >
                             <p className="font-manrope text-xs font-light text-white/40 uppercase tracking-[0.3em] mb-4">
-                                The Discovery
+                                {t('cityIntro.discovery')}
                             </p>
                             <p className="font-tenor text-8xl md:text-9xl text-white/10 leading-none">
                                 1893
@@ -127,21 +130,15 @@ const CityIntro = () => {
                                 variants={fadeInUp}
                                 className="font-tenor text-3xl md:text-4xl lg:text-5xl leading-tight mb-10"
                             >
-                                Dr. Alexandre Yersin established this haven above the clouds.
+                                {t('cityIntro.discoveryTitle')}
                             </motion.h2>
 
                             <motion.div variants={fadeInUp} className="space-y-8 text-left">
                                 <p className="font-manrope font-light text-lg text-slate-300 leading-loose">
-                                    The Swiss-French physician and explorer first set foot on this remote plateau
-                                    while charting new routes through the Annamite Mountains. Captivated by its
-                                    temperate climate and breathtaking vistas, he reported his findings to the
-                                    colonial administration.
+                                    {t('cityIntro.discoveryP1')}
                                 </p>
                                 <p className="font-manrope font-light text-lg text-slate-400 leading-loose">
-                                    The name "Dalat" derives from the indigenous K'Ho phrase
-                                    <em className="text-slate-200"> "Đạ Lạch"</em>—meaning "Stream of the Lat People."
-                                    It is a tribute to those who called these misty highlands home for centuries
-                                    before the French arrived.
+                                    {t('cityIntro.discoveryP2')}
                                 </p>
                             </motion.div>
                         </motion.div>
@@ -184,21 +181,19 @@ const CityIntro = () => {
                                 variants={fadeIn}
                                 className="font-manrope text-xs font-light text-white/40 uppercase tracking-[0.3em] mb-6"
                             >
-                                The Plateau
+                                {t('cityIntro.plateau')}
                             </motion.p>
                             <motion.h3
                                 variants={fadeInUp}
                                 className="font-tenor text-3xl md:text-4xl lg:text-5xl leading-tight mb-10"
                             >
-                                1,500 meters above the sea
+                                {t('cityIntro.plateauTitle')}
                             </motion.h3>
                             <motion.p
                                 variants={fadeInUp}
                                 className="font-manrope font-light text-lg text-slate-300 leading-loose mb-8"
                             >
-                                Perched on the Lang Biang Plateau, Dalat enjoys year-round temperatures
-                                between 14°C and 23°C. While the rest of Vietnam swelters in tropical heat,
-                                the highlands remain an eternal spring.
+                                {t('cityIntro.plateauDesc')}
                             </motion.p>
 
                             {/* Stats */}
@@ -209,13 +204,13 @@ const CityIntro = () => {
                                 <div className="text-left">
                                     <p className="font-tenor text-4xl text-white">14–23°C</p>
                                     <p className="font-manrope text-xs font-light text-white/40 uppercase tracking-wider mt-2">
-                                        Year-round
+                                        {t('cityIntro.yearRound')}
                                     </p>
                                 </div>
                                 <div className="text-left">
                                     <p className="font-tenor text-4xl text-white">4,900 ft</p>
                                     <p className="font-manrope text-xs font-light text-white/40 uppercase tracking-wider mt-2">
-                                        Elevation
+                                        {t('cityIntro.elevation')}
                                     </p>
                                 </div>
                             </motion.div>
@@ -243,29 +238,25 @@ const CityIntro = () => {
                                 variants={fadeIn}
                                 className="font-manrope text-xs font-light text-white/40 uppercase tracking-[0.3em] mb-6"
                             >
-                                Heritage
+                                {t('cityIntro.heritage')}
                             </motion.p>
                             <motion.h3
                                 variants={fadeInUp}
                                 className="font-tenor text-3xl md:text-4xl lg:text-5xl leading-tight mb-10"
                             >
-                                2,000 French villas still stand
+                                {t('cityIntro.heritageTitle')}
                             </motion.h3>
                             <motion.p
                                 variants={fadeInUp}
                                 className="font-manrope font-light text-lg text-slate-300 leading-loose mb-8"
                             >
-                                The colonial era left behind an architectural legacy unlike anywhere else in
-                                Southeast Asia. Pastel-colored villas, Gothic churches, and Art Deco hotels
-                                dot the hillsides—a living museum of early 20th-century European design.
+                                {t('cityIntro.heritageP1')}
                             </motion.p>
                             <motion.p
                                 variants={fadeInUp}
                                 className="font-manrope font-light text-lg text-slate-400 leading-loose"
                             >
-                                Known as the "City of Flowers," Dalat's cool climate nurtures hydrangeas,
-                                roses, and wild orchids that bloom year-round, painting the hills in
-                                perpetual color.
+                                {t('cityIntro.heritageP2')}
                             </motion.p>
                         </motion.div>
 
@@ -302,11 +293,10 @@ const CityIntro = () => {
                         variants={fadeInUp}
                     >
                         <p className="font-manrope font-extralight text-2xl md:text-3xl lg:text-4xl text-slate-300 leading-loose mb-12">
-                            "In Dalat, time slows to the rhythm of falling pine needles
-                            and the whisper of mountain mist."
+                            {t('cityIntro.quote')}
                         </p>
                         <p className="font-manrope text-sm font-light text-white/30 uppercase tracking-[0.2em]">
-                            — A traveler's reflection
+                            {t('cityIntro.quoteAuthor')}
                         </p>
                     </motion.div>
                 </div>
@@ -318,7 +308,7 @@ const CityIntro = () => {
             <footer className="py-16 border-t border-white/5">
                 <div className="max-w-7xl mx-auto px-8 md:px-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                     <p className="font-manrope text-xs font-light text-white/30 uppercase tracking-wider">
-                        A Digital Experience by Dalat Vibe
+                        {t('cityIntro.footerText')}
                     </p>
                     <p className="font-tenor text-lg text-white/60">
                         Dalat Vibe
@@ -330,3 +320,4 @@ const CityIntro = () => {
 };
 
 export default CityIntro;
+

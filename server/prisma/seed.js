@@ -647,16 +647,22 @@ async function main() {
     }
 
     // Create places
+    // Indoor-suitable categories for rainy weather
+    const indoorCategories = ['Café', 'Restaurant', 'Architecture', 'Street Food', 'Historic Stay'];
+
     for (const place of places) {
         const { categoryName, ...placeData } = place;
+        const isIndoor = indoorCategories.includes(categoryName);
+
         await prisma.place.create({
             data: {
                 ...placeData,
-                categoryId: categoryMap[categoryName]
+                categoryId: categoryMap[categoryName],
+                indoorSuitable: isIndoor
             }
         });
     }
-    console.log(`✓ Created ${places.length} places`);
+    console.log(`✓ Created ${places.length} places (with indoor/outdoor tags)`);
 
     // Create demo user (with generic avatar - null means use default icon)
     const demoUser = await prisma.user.create({

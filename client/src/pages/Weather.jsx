@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Sun,
     Cloud,
@@ -26,58 +27,7 @@ import {
 } from 'lucide-react';
 
 // API requests are proxied through backend to protect API keys
-
-// =============================================================================
-// Place Recommendations Data
-// =============================================================================
-
-const INDOOR_PLACES = [
-    {
-        id: 1,
-        title: "Still Cafe",
-        subtitle: "Cozy mountain retreat",
-        image: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&h=400&fit=crop",
-        category: "Cafe"
-    },
-    {
-        id: 2,
-        title: "Dalat Railway Museum",
-        subtitle: "Historic French architecture",
-        image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&h=400&fit=crop",
-        category: "Museum"
-    },
-    {
-        id: 3,
-        title: "Crazy House",
-        subtitle: "Whimsical wonderland",
-        image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600&h=400&fit=crop",
-        category: "Landmark"
-    }
-];
-
-const OUTDOOR_PLACES = [
-    {
-        id: 4,
-        title: "Xuan Huong Lake",
-        subtitle: "Serene highland waters",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
-        category: "Nature"
-    },
-    {
-        id: 5,
-        title: "Valley of Love",
-        subtitle: "Romantic hillside escape",
-        image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop",
-        category: "Park"
-    },
-    {
-        id: 6,
-        title: "Datanla Waterfall",
-        subtitle: "Adventure awaits",
-        image: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?w=600&h=400&fit=crop",
-        category: "Waterfall"
-    }
-];
+const API_BASE = 'http://localhost:3001/api';
 
 // =============================================================================
 // Helper Functions
@@ -87,12 +37,13 @@ const capitalizeWords = (str) => {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-const getDayName = (dateString, index) => {
-    if (index === 0) return 'Today';
-    if (index === 1) return 'Tomorrow';
+const getDayName = (dateString, index, isVi = false) => {
+    if (index === 0) return isVi ? 'Hôm nay' : 'Today';
+    if (index === 1) return isVi ? 'Ngày mai' : 'Tomorrow';
     const date = new Date(dateString);
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[date.getDay()];
+    const daysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const daysVi = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+    return isVi ? daysVi[date.getDay()] : daysEn[date.getDay()];
 };
 
 const formatHour = (dtTxt) => {
@@ -103,12 +54,12 @@ const formatHour = (dtTxt) => {
     return `${displayHour.toString().padStart(2, '0')}:00`;
 };
 
-const getTimePeriod = (hour) => {
-    if (hour < 6) return 'Night';
-    if (hour < 12) return 'Morning';
-    if (hour < 17) return 'Afternoon';
-    if (hour < 21) return 'Evening';
-    return 'Night';
+const getTimePeriod = (hour, isVi = false) => {
+    if (hour < 6) return isVi ? 'Đêm' : 'Night';
+    if (hour < 12) return isVi ? 'Sáng' : 'Morning';
+    if (hour < 17) return isVi ? 'Chiều' : 'Afternoon';
+    if (hour < 21) return isVi ? 'Tối' : 'Evening';
+    return isVi ? 'Đêm' : 'Night';
 };
 
 const getWeatherIcon = (weatherId, size = 'medium') => {
@@ -258,8 +209,25 @@ const OutfitIcon = ({ type }) => {
 // =============================================================================
 
 const OOTDCard = ({ temp, weatherId }) => {
+    const { t, i18n } = useTranslation();
     const [preference, setPreference] = useState('standard');
     const ootd = getDetailedOOTD(temp, weatherId, preference);
+    const isVi = i18n.language === 'vi';
+
+    // Translate outfit title based on language
+    const getTranslatedTitle = (title) => {
+        const titleMap = {
+            'Extra Rain Protection': isVi ? 'Bảo vệ Mưa Tối đa' : title,
+            'Light Rain Gear': isVi ? 'Trang phục Mưa Nhẹ' : title,
+            'Rain Ready': isVi ? 'Sẵn sàng Mưa' : title,
+            'Full Winter Mode': isVi ? 'Chế độ Đông Đầy đủ' : title,
+            'Cozy Layers': isVi ? 'Lớp Ấm Áp' : title,
+            'Balanced Comfort': isVi ? 'Thoải mái Cân bằng' : title,
+            'Light and Breezy': isVi ? 'Nhẹ nhàng Thoáng mát' : title,
+            'Stay Cool': isVi ? 'Giữ Mát' : title
+        };
+        return titleMap[title] || title;
+    };
 
     const PreferenceTab = ({ value, icon: Icon, label }) => (
         <button
@@ -311,24 +279,24 @@ const OOTDCard = ({ temp, weatherId }) => {
                 </div>
                 <div>
                     <span className="font-manrope text-xs text-white/50 uppercase tracking-widest block mb-1">
-                        Outfit Guide
+                        {t('weather.outfitGuide')}
                     </span>
-                    <h3 className="font-tenor text-2xl text-white">{ootd.title}</h3>
+                    <h3 className="font-tenor text-2xl text-white">{getTranslatedTitle(ootd.title)}</h3>
                 </div>
             </div>
 
             {/* Preference Tabs */}
             <div className="flex gap-2 mb-6">
-                <PreferenceTab value="warmer" icon={Flame} label="Warmer" />
-                <PreferenceTab value="standard" icon={Minus} label="Standard" />
-                <PreferenceTab value="cooler" icon={Snowflake} label="Cooler" />
+                <PreferenceTab value="warmer" icon={Flame} label={t('weather.warmer')} />
+                <PreferenceTab value="standard" icon={Minus} label={t('weather.standard')} />
+                <PreferenceTab value="cooler" icon={Snowflake} label={t('weather.cooler')} />
             </div>
 
             {/* 3-Part Outfit List */}
             <div className="flex-1 flex flex-col justify-evenly divide-y divide-white/10">
-                <OutfitRow type="outerwear" label="Outerwear" value={ootd.outerwear} />
-                <OutfitRow type="top" label="Top" value={ootd.top} />
-                <OutfitRow type="bottom" label="Bottom" value={ootd.bottom} />
+                <OutfitRow type="outerwear" label={t('weather.outerwear')} value={ootd.outerwear} />
+                <OutfitRow type="top" label={t('weather.top')} value={ootd.top} />
+                <OutfitRow type="bottom" label={t('weather.bottom')} value={ootd.bottom} />
             </div>
         </div>
     );
@@ -339,6 +307,10 @@ const OOTDCard = ({ temp, weatherId }) => {
 // =============================================================================
 
 const HourlyRow = ({ hour }) => {
+    const { i18n } = useTranslation();
+    const isVi = i18n.language === 'vi';
+    const period = getTimePeriod(hour.hour, isVi);
+
     return (
         <div className="
             flex items-center justify-between
@@ -350,7 +322,7 @@ const HourlyRow = ({ hour }) => {
                 <Clock className="w-4 h-4 text-white/50" />
                 <span className="font-manrope text-sm text-white/80 w-14">{hour.time}</span>
                 <span className="font-manrope text-xs text-white/40 hidden sm:inline">
-                    {hour.period}
+                    {period}
                 </span>
             </div>
             <div className="flex items-center gap-4">
@@ -368,6 +340,10 @@ const HourlyRow = ({ hour }) => {
 // =============================================================================
 
 const DayForecastCard = ({ day, isExpanded, onToggle, hourlyData }) => {
+    const { t, i18n } = useTranslation();
+    const isVi = i18n.language === 'vi';
+    const dayName = getDayName(day.date, day.index, isVi);
+
     return (
         <div className="
             bg-white/10 backdrop-blur-md
@@ -390,7 +366,7 @@ const DayForecastCard = ({ day, isExpanded, onToggle, hourlyData }) => {
                     {getWeatherIcon(day.weatherId, 'medium')}
                     <div>
                         <h3 className="font-tenor text-lg md:text-xl text-white">
-                            {day.dayName}
+                            {dayName}
                         </h3>
                         <p className="font-manrope text-sm text-white/60">
                             {day.condition}
@@ -420,7 +396,7 @@ const DayForecastCard = ({ day, isExpanded, onToggle, hourlyData }) => {
                     <div className="flex items-center gap-2 mb-3">
                         <Clock className="w-4 h-4 text-white/50" />
                         <span className="font-manrope text-xs text-white/50 uppercase tracking-wider">
-                            Hourly Breakdown
+                            {t('weather.hourlyBreakdown')}
                         </span>
                     </div>
                     {hourlyData.length > 0 ? (
@@ -429,7 +405,7 @@ const DayForecastCard = ({ day, isExpanded, onToggle, hourlyData }) => {
                         ))
                     ) : (
                         <p className="text-white/40 text-sm font-manrope py-4 text-center">
-                            No hourly data available
+                            {t('weather.loading')}
                         </p>
                     )}
                 </div>
@@ -442,7 +418,11 @@ const DayForecastCard = ({ day, isExpanded, onToggle, hourlyData }) => {
 // Component: Recommendation Card
 // =============================================================================
 
-const RecommendationCard = ({ place }) => {
+const RecommendationCard = ({ place, isVietnamese }) => {
+    const title = isVietnamese && place.titleVi ? place.titleVi : place.title;
+    const location = isVietnamese && place.locationVi ? place.locationVi : place.location;
+    const categoryName = place.category?.name || 'Attraction';
+
     return (
         <Link
             to={`/place/${place.id}`}
@@ -460,8 +440,8 @@ const RecommendationCard = ({ place }) => {
             {/* Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
                 <img
-                    src={place.image}
-                    alt={place.title}
+                    src={place.imagePath || place.image}
+                    alt={title}
                     className="
                         w-full h-full object-cover
                         group-hover:scale-105 transition-transform duration-500
@@ -476,16 +456,16 @@ const RecommendationCard = ({ place }) => {
                     bg-white/20 backdrop-blur-sm
                     text-xs font-manrope text-white
                 ">
-                    {place.category}
+                    {categoryName}
                 </div>
             </div>
 
             {/* Content */}
             <div className="p-4">
-                <h4 className="font-tenor text-lg text-white mb-1">{place.title}</h4>
+                <h4 className="font-tenor text-lg text-white mb-1">{title}</h4>
                 <div className="flex items-center gap-1.5 text-white/60">
                     <MapPin className="w-3 h-3" />
-                    <span className="font-manrope text-xs">{place.subtitle}</span>
+                    <span className="font-manrope text-xs">{location || place.subtitle}</span>
                 </div>
             </div>
         </Link>
@@ -497,12 +477,17 @@ const RecommendationCard = ({ place }) => {
 // =============================================================================
 
 const Weather = () => {
+    const { t, i18n } = useTranslation();
     const [currentWeather, setCurrentWeather] = useState(null);
     const [forecast, setForecast] = useState([]);
     const [hourlyByDay, setHourlyByDay] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [expandedDay, setExpandedDay] = useState(null);
+    const [recommendedPlaces, setRecommendedPlaces] = useState([]);
+    const [isIndoorWeather, setIsIndoorWeather] = useState(false);
+
+    const isVietnamese = i18n.language === 'vi';
 
     useEffect(() => {
         const fetchWeatherData = async () => {
@@ -559,7 +544,7 @@ const Weather = () => {
 
                     hourlyMap[date].push({
                         time: formatHour(item.dt_txt),
-                        period: getTimePeriod(hour),
+                        hour: hour,
                         temp: Math.round(item.main.temp),
                         weatherId: item.weather[0].id
                     });
@@ -569,7 +554,7 @@ const Weather = () => {
                     .slice(0, 5)
                     .map((day, index) => ({
                         date: day.date,
-                        dayName: getDayName(day.date, index),
+                        index: index,
                         maxTemp: Math.round(Math.max(...day.temps)),
                         minTemp: Math.round(Math.min(...day.temps)),
                         weatherId: day.weatherIds[Math.floor(day.weatherIds.length / 2)],
@@ -588,22 +573,46 @@ const Weather = () => {
         fetchWeatherData();
     }, []);
 
-    // Determine recommendations based on weather
-    const getRecommendedPlaces = () => {
-        if (!currentWeather) return OUTDOOR_PLACES;
-        return isRainyWeather(currentWeather.weatherId) ? INDOOR_PLACES : OUTDOOR_PLACES;
-    };
+    // Fetch weather-based recommendations when weather is loaded
+    useEffect(() => {
+        const fetchRecommendations = async () => {
+            if (!currentWeather) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/places/weather-recommendations?weatherId=${currentWeather.weatherId}&limit=6`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setRecommendedPlaces(data.places || []);
+                    setIsIndoorWeather(data.isIndoor || false);
+                }
+            } catch (err) {
+                console.error('Failed to fetch recommendations:', err);
+                // Fallback: fetch all places
+                try {
+                    const fallbackRes = await fetch(`${API_BASE}/places?limit=6`);
+                    if (fallbackRes.ok) {
+                        const fallbackData = await fallbackRes.json();
+                        setRecommendedPlaces(fallbackData);
+                    }
+                } catch (e) {
+                    console.error('Fallback fetch also failed:', e);
+                }
+            }
+        };
+
+        fetchRecommendations();
+    }, [currentWeather]);
 
     const getRecommendationTitle = () => {
-        if (!currentWeather) return "Explore Dalat";
-        return isRainyWeather(currentWeather.weatherId)
-            ? "Cozy Indoor Retreats"
-            : "Outdoor Adventures";
+        if (!currentWeather) return t('weather.outdoorAdventures');
+        return isIndoorWeather
+            ? t('weather.cozyIndoorRetreats')
+            : t('weather.outdoorAdventures');
     };
 
     const getRecommendationIcon = () => {
         if (!currentWeather) return <Camera className="w-5 h-5 text-white/70" />;
-        return isRainyWeather(currentWeather.weatherId)
+        return isIndoorWeather
             ? <Coffee className="w-5 h-5 text-white/70" />
             : <TreePine className="w-5 h-5 text-white/70" />;
     };
@@ -649,10 +658,10 @@ const Weather = () => {
                     {/* Section Header - Subtle and Elegant */}
                     <div className="mb-8">
                         <p className="font-manrope text-xs text-white/50 uppercase tracking-[0.3em] mb-2">
-                            Dalat Highlands
+                            {t('weather.dalatHighlands')}
                         </p>
                         <h1 className="font-tenor text-2xl md:text-3xl text-white">
-                            Current Conditions
+                            {t('weather.currentConditions')}
                         </h1>
                     </div>
 
@@ -687,19 +696,19 @@ const Weather = () => {
                                         <div className="flex items-center gap-2">
                                             <Thermometer className="w-4 h-4" />
                                             <span className="font-manrope text-sm">
-                                                Feels like {currentWeather.feelsLike}°
+                                                {t('weather.feelsLike')} {currentWeather.feelsLike}°
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Droplets className="w-4 h-4" />
                                             <span className="font-manrope text-sm">
-                                                {currentWeather.humidity}% Humidity
+                                                {currentWeather.humidity}% {t('weather.humidity')}
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Wind className="w-4 h-4" />
                                             <span className="font-manrope text-sm">
-                                                Wind {currentWeather.windSpeed} m/s
+                                                {t('weather.wind')} {currentWeather.windSpeed} m/s
                                             </span>
                                         </div>
                                     </div>
@@ -721,10 +730,10 @@ const Weather = () => {
                 <section className="mb-12 md:mb-16">
                     <div className="flex items-center gap-3 mb-6">
                         <Clock className="w-5 h-5 text-white/70" />
-                        <h2 className="font-tenor text-xl text-white">Day Forecast</h2>
+                        <h2 className="font-tenor text-xl text-white">{t('weather.dayForecast')}</h2>
                     </div>
                     <p className="font-manrope text-sm text-white/50 mb-6">
-                        Tap any day to see the full hourly breakdown
+                        {t('weather.tapToSeeHourly')}
                     </p>
 
                     <div className="space-y-3">
@@ -749,7 +758,7 @@ const Weather = () => {
                     <div className="flex items-center gap-3 mb-2">
                         <Sparkles className="w-5 h-5 text-white/70" />
                         <span className="font-manrope text-xs text-white/60 uppercase tracking-wider">
-                            Smart Suggestions
+                            {t('weather.smartSuggestions')}
                         </span>
                     </div>
                     <div className="flex items-center gap-3 mb-6">
@@ -759,12 +768,12 @@ const Weather = () => {
                         </h2>
                     </div>
                     <p className="font-manrope text-sm text-white/50 mb-8">
-                        Perfect destinations based on current conditions
+                        {t('weather.perfectDestinations')}
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {getRecommendedPlaces().map((place) => (
-                            <RecommendationCard key={place.id} place={place} />
+                        {recommendedPlaces.map((place) => (
+                            <RecommendationCard key={place.id} place={place} isVietnamese={isVietnamese} />
                         ))}
                     </div>
                 </section>

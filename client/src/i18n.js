@@ -45,7 +45,7 @@ const resources = {
             // Hero Section
             hero: {
                 title: 'Discover the\nMisty Highlands',
-                subtitle: 'Where French colonial charm meets Vietnamese soul.'
+                subtitle: 'Dalat: The Marvelous Essence of a Blessed Land.'
             },
             // Sections
             sections: {
@@ -102,7 +102,25 @@ const resources = {
                 uvIndex: 'UV Index',
                 sunrise: 'Sunrise',
                 sunset: 'Sunset',
-                forecast: '5-Day Forecast'
+                forecast: '5-Day Forecast',
+                dalatHighlands: 'Dalat Highlands',
+                currentConditions: 'Current Conditions',
+                dayForecast: 'Day Forecast',
+                hourlyBreakdown: 'Hourly Breakdown',
+                smartSuggestions: 'Smart Suggestions',
+                outdoorAdventures: 'Outdoor Adventures',
+                cozyIndoorRetreats: 'Cozy Indoor Retreats',
+                perfectDestinations: 'Perfect destinations based on current conditions',
+                tapToSeeHourly: 'Tap any day to see the full hourly breakdown',
+                outfitGuide: 'Outfit Guide',
+                outerwear: 'Outerwear',
+                top: 'Top',
+                bottom: 'Bottom',
+                warmer: 'Warmer',
+                standard: 'Standard',
+                cooler: 'Cooler',
+                loading: 'Loading weather data...',
+                unavailable: 'Weather Unavailable'
             },
             // Chat
             chat: {
@@ -143,6 +161,27 @@ const resources = {
                 close: 'Close',
                 seeMore: 'See More',
                 viewAll: 'View All'
+            },
+            // CityIntro Page
+            cityIntro: {
+                location: 'Vietnam · Central Highlands',
+                heroSubtitle: 'A sanctuary of cool mists, ancient pine forests, and timeless French elegance.',
+                discovery: 'The Discovery',
+                discoveryTitle: 'Dr. Alexandre Yersin established this haven above the clouds.',
+                discoveryP1: 'The Swiss-French physician and explorer first set foot on this remote plateau while charting new routes through the Annamite Mountains. Captivated by its temperate climate and breathtaking vistas, he reported his findings to the colonial administration.',
+                discoveryP2: 'The name "Dalat" derives from the indigenous K\'Ho phrase "Đạ Lạch"—meaning "Stream of the Lat People." It is a tribute to those who called these misty highlands home for centuries before the French arrived.',
+                plateau: 'The Plateau',
+                plateauTitle: '1,500 meters above the sea',
+                plateauDesc: 'Perched on the Lang Biang Plateau, Dalat enjoys year-round temperatures between 14°C and 23°C. While the rest of Vietnam swelters in tropical heat, the highlands remain an eternal spring.',
+                yearRound: 'Year-round',
+                elevation: 'Elevation',
+                heritage: 'Heritage',
+                heritageTitle: '2,000 French villas still stand',
+                heritageP1: 'The colonial era left behind an architectural legacy unlike anywhere else in Southeast Asia. Pastel-colored villas, Gothic churches, and Art Deco hotels dot the hillsides—a living museum of early 20th-century European design.',
+                heritageP2: 'Known as the "City of Flowers," Dalat\'s cool climate nurtures hydrangeas, roses, and wild orchids that bloom year-round, painting the hills in perpetual color.',
+                quote: '"In Dalat, time slows to the rhythm of falling pine needles and the whisper of mountain mist."',
+                quoteAuthor: '— A traveler\'s reflection',
+                footerText: 'A Digital Experience by Dalat Vibe'
             }
         }
     },
@@ -185,7 +224,7 @@ const resources = {
             // Hero Section
             hero: {
                 title: 'Khám phá\nCao nguyên Sương mù',
-                subtitle: 'Nơi nét duyên thuộc địa Pháp hòa quyện tâm hồn Việt.'
+                subtitle: 'Đà Lạt - Kết tinh kỳ diệu từ đất lành.'
             },
             // Sections
             sections: {
@@ -242,7 +281,25 @@ const resources = {
                 uvIndex: 'Chỉ số UV',
                 sunrise: 'Bình minh',
                 sunset: 'Hoàng hôn',
-                forecast: 'Dự báo 5 ngày'
+                forecast: 'Dự báo 5 ngày',
+                dalatHighlands: 'Cao nguyên Đà Lạt',
+                currentConditions: 'Điều kiện Hiện tại',
+                dayForecast: 'Dự báo Theo ngày',
+                hourlyBreakdown: 'Chi tiết Theo giờ',
+                smartSuggestions: 'Gợi ý Thông minh',
+                outdoorAdventures: 'Khám phá Ngoài trời',
+                cozyIndoorRetreats: 'Điểm đến Trong nhà',
+                perfectDestinations: 'Điểm đến hoàn hảo dựa trên thời tiết hiện tại',
+                tapToSeeHourly: 'Nhấn để xem chi tiết theo giờ',
+                outfitGuide: 'Hướng dẫn Trang phục',
+                outerwear: 'Áo khoác',
+                top: 'Áo',
+                bottom: 'Quần',
+                warmer: 'Ấm hơn',
+                standard: 'Tiêu chuẩn',
+                cooler: 'Mát hơn',
+                loading: 'Đang tải dữ liệu thời tiết...',
+                unavailable: 'Không có dữ liệu Thời tiết'
             },
             // Chat
             chat: {
@@ -283,6 +340,27 @@ const resources = {
                 close: 'Đóng',
                 seeMore: 'Xem thêm',
                 viewAll: 'Xem tất cả'
+            },
+            // CityIntro Page
+            cityIntro: {
+                location: 'Việt Nam · Tây Nguyên',
+                heroSubtitle: 'Nơi ẩn náu của sương mù mát lành, rừng thông cổ thụ và vẻ đẹp Pháp trường tồn.',
+                discovery: 'Khám Phá',
+                discoveryTitle: 'Bác sĩ Alexandre Yersin đã xây dựng thiên đường này trên mây.',
+                discoveryP1: 'Bác sĩ và nhà thám hiểm người Thụy Sĩ-Pháp đã đặt chân đến cao nguyên xa xôi này khi vẽ bản đồ các tuyến đường mới qua dãy Trường Sơn. Bị mê hoặc bởi khí hậu ôn hòa và cảnh quan tuyệt đẹp, ông đã báo cáo phát hiện của mình cho chính quyền thuộc địa.',
+                discoveryP2: 'Tên gọi "Đà Lạt" bắt nguồn từ cụm từ "Đạ Lạch" của người K\'Ho bản địa—có nghĩa là "Suối của Người Lát." Đây là sự tri ân dành cho những người đã gọi vùng cao nguyên sương mù này là nhà trong nhiều thế kỷ trước khi người Pháp đến.',
+                plateau: 'Cao Nguyên',
+                plateauTitle: '1.500 mét trên mực nước biển',
+                plateauDesc: 'Nằm trên Cao nguyên Langbiang, Đà Lạt được hưởng nhiệt độ quanh năm từ 14°C đến 23°C. Trong khi phần còn lại của Việt Nam oi bức trong nóng nhiệt đới, cao nguyên vẫn là mùa xuân vĩnh hằng.',
+                yearRound: 'Quanh năm',
+                elevation: 'Độ cao',
+                heritage: 'Di Sản',
+                heritageTitle: '2.000 biệt thự Pháp vẫn còn đứng vững',
+                heritageP1: 'Thời kỳ thuộc địa đã để lại di sản kiến trúc không giống bất kỳ nơi nào khác ở Đông Nam Á. Những biệt thự màu pastel, nhà thờ Gothic và khách sạn Art Deco nằm rải rác trên các sườn đồi—một bảo tàng sống của thiết kế châu Âu đầu thế kỷ 20.',
+                heritageP2: 'Được mệnh danh là "Thành phố Hoa," khí hậu mát mẻ của Đà Lạt nuôi dưỡng cẩm tú cầu, hoa hồng và lan dại nở quanh năm, vẽ lên những ngọn đồi bằng sắc màu vĩnh cửu.',
+                quote: '"Ở Đà Lạt, thời gian chậm lại theo nhịp rơi của những chiếc lá thông và tiếng thì thầm của sương núi."',
+                quoteAuthor: '— Suy tư của một lữ khách',
+                footerText: 'Trải nghiệm Số bởi Dalat Vibe'
             }
         }
     },

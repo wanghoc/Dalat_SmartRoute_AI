@@ -39,6 +39,38 @@ router.get('/', async (req, res) => {
 });
 
 // =============================================================================
+// GET /api/places/weather-recommendations - Get Places by Weather Condition
+// =============================================================================
+
+router.get('/weather-recommendations', async (req, res) => {
+    try {
+        const { weatherId, limit = 6 } = req.query;
+        const weatherCode = parseInt(weatherId) || 800;
+
+        // Determine if weather is rainy (200-699 are rain/storm/snow/fog)
+        const isRainy = weatherCode >= 200 && weatherCode < 700;
+
+        const places = await req.prisma.place.findMany({
+            where: {
+                indoorSuitable: isRainy // Indoor for rainy, outdoor for clear
+            },
+            include: { category: true },
+            take: parseInt(limit),
+            orderBy: { rating: 'desc' }
+        });
+
+        res.json({
+            weatherCondition: isRainy ? 'rainy' : 'clear',
+            isIndoor: isRainy,
+            places
+        });
+    } catch (error) {
+        console.error('Get weather recommendations error:', error);
+        res.status(500).json({ error: 'Failed to fetch weather recommendations' });
+    }
+});
+
+// =============================================================================
 // GET /api/places/:id - Get Place Details
 // =============================================================================
 
