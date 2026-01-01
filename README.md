@@ -35,7 +35,7 @@ cd server
 npx prisma generate #(1st time)
 npx prisma db push #(1st time)
 npm run db:seed #(1st time)
-npx prisma studios
+npx prisma studio
 ```
 
 # Run server
